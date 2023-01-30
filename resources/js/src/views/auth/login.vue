@@ -9,7 +9,7 @@
                                 Log In to <router-link to="/"><span class="brand-name">CORK</span></router-link>
                             </h1>
                             <p class="signup-link">New Here? <router-link to="/auth/register">Create an account</router-link></p>
-                            <form class="text-start">
+                            <form @submit="formSubmit" class="text-start">
                                 <div class="form">
                                     <div id="username-field" class="field-wrapper input">
                                         <svg
@@ -93,4 +93,29 @@
 
     import { useMeta } from '@/composables/use-meta';
     useMeta({ title: 'Login Cover' });
+</script>
+
+<script>
+export default {
+    mounted() {
+        console.log('Component mounted.')
+    },
+    methods: {
+        formSubmit(e) {
+            e.preventDefault();
+            console.log("テスト実装");
+            // let currentObj = this;
+            // this.axios.post('http://localhost:8000/your-post-api', {
+            //     name: this.name,
+            //     description: this.description
+            // })
+            // .then(function (response) {
+            //     currentObj.output = response.data;
+            // })
+            // .catch(function (error) {
+            //     currentObj.output = error;
+            // });
+        }
+    }
+}
 </script>

@@ -14,3 +14,7 @@ npm-debug.log
 yarn-error.log
 /.idea
 /.vscode/settings.json
+tools/*.key
+.DS_Store
+public/mix-manifest.json
+public/css/app.css

@@ -62,3 +62,82 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## わくわくおきなわ プロジェクト用
+
+### Setup
+
+※ 後々、Dockerへ設定を以降予定ですが、
+現時点ではローカルPC内に直でインストールします。
+
+##### pnpmのインストール
+```
+brew install pnpm
+
+pnpm install
+```
+
+##### phpのインストール
+8.0xをインストール
+```
+brew install php@8.0
+
+```
+
+もし"php -v"でphpが8.0.xになっていない場合、以下で切り替える
+```
+brew link php@8.0 --force --overwrite
+```
+
+##### composerのインストール
+```
+brew install composer
+```
+
+#### .envの配置
+以下からDL
+https://drive.google.com/drive/u/0/folders/1zi1-tBGCdHAAqKR1HOaivmjCByz0iENn
+
+`/`（トップ階層）へ配置する。
+
+
+##### xs559880.keyの配置
+Dev DBへ接続するためにssh keyを以下からDL
+https://drive.google.com/drive/u/0/folders/1zi1-tBGCdHAAqKR1HOaivmjCByz0iENn
+
+`/tools` フォルダ内に配置し、パーミッションを 600 へ変更する
+```
+chmod 600 ./tools/xs559880.key
+```
+
+### Local Server
+
+##### Start
+
+SSH Tunnel を起動
+ローカル内からDev DBへ接続するために必要
+```
+./tools/ssh_tunnel.sh
+```
+
+Vueの起動
+```
+pnpm watch
+```
+
+Laravelの起動
+```
+pnpm server-start
+```
+
+以下でアクセスできることを確認する
+```
+http://localhost:8000
+```
+
+
+### 追加ライブラリについて
+
+* ルーティングの自動定義
+https://github.com/izniburak/laravel-auto-routes
+
