@@ -1,0 +1,63 @@
+version: '3.8'
+
+volumes:
+ mysql-volume:
+
+services:
+  app:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: ./docker/php/Dockerfile
+    volumes:
+      - ./src:/var/www/html
+    environment:
+      - DB_CONNECTION=mysql
+      - DB_HOST=db
+      - DB_DATABASE=${DB_NAME}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+    ports:
+      - ${WEB_PORT}:8000
+    command: >
+      /bin/bash -c "./tools/start_app_dev.sh"
+
+  front:
+    platform: linux/amd64
+    image: node:18-slim
+    volumes:
+      - ./src:/var/www/html
+    working_dir: /var/www/html
+    command: 
+      /bin/bash -c "npm i && npm run watch-poll"
+
+  db:
+    platform: linux/amd64
+    image: mariadb:10.5.18
+    ports:
+      - ${DB_PORT}:3306
+    environment:
+      - MARIADB_DATABASE=${DB_NAME}
+      - MARIADB_USER=${DB_USERNAME}
+      - MARIADB_PASSWORD=${DB_PASSWORD}
+      - MARIADB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+      - TZ:'Asia/Tokyo'
+    volumes:
+      - ./docker/mariadb/my.cnf:/etc/my.cnf
+      - ./docker/mariadb/data:/var/lib/mysql
+
+  phpmyadmin:
+    platform: linux/amd64
+    image: phpmyadmin/phpmyadmin
+    depends_on:
+      - db
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOSTS=db
+      - PMA_USER=root
+      - PMA_PASSWORD=${DB_ROOT_PASSWORD}
+    ports:
+      - "3001:80"
+    volumes:
+      - ./docker/phpmyadmin/sessions:/sessions
+
