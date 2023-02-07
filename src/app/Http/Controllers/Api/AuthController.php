@@ -10,6 +10,6 @@ class AuthController extends Controller
     public function fooBar(Request $request)
     {
         $token = '123';
-        return ['test' => $token];
+        return ['test' => $token, 'config' => config('database')];
     }
 }

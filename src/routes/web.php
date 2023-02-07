@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AppController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\DebugController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::auto('/auth', AuthController::class);
+Route::auto('/api/auth', AuthController::class);
+Route::auto('/api/debug', DebugController::class);
 
 Route::get('/{any}', [AppController::class, 'index'])->where('any', '.*');
