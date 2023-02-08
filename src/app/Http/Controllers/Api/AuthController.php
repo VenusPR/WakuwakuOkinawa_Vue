@@ -16,11 +16,5 @@ class AuthController extends Controller
         return ['test' => $token, 'config' => config('database')];
     }
 
-    public function fooBarTest(Request $request)
-    {
-        // $token = 'abc';
-        // $token =  User::all();
-        $token =  DB::select('select * from users limit 1;');
-        return ['test' => $token];
-    }
+    
 }

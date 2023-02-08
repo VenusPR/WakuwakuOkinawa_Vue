@@ -19,7 +19,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::auto('/api/auth', AuthController::class);
 Route::auto('/api/debug', DebugController::class);
-Route::auto('/account', AccountController::class);
+Route::auto('/api/account', AccountController::class);
+
+// Route::post('api/account/delete-bank', [AccountController::class, 'deleteBank']);
 
 
 Route::get('/{any}', [AppController::class, 'index'])->where('any', '.*');
