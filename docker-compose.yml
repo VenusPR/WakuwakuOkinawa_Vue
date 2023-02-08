@@ -18,6 +18,7 @@ services:
       - DB_DATABASE=${DB_NAME}
       - DB_USERNAME=${DB_USERNAME}
       - DB_PASSWORD=${DB_PASSWORD}
+      - DB_PORT=${DB_PORT}
     ports:
       - ${WEB_PORT}:8000
     command: >
