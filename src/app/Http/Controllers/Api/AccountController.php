@@ -24,12 +24,12 @@ class AccountController extends Controller
   /**
    * 個人の口座を変更
    */
-    public function updateBank(Request $request)
+    public function updateBank(Request $request, int $id)
   {
     $user_id = 1;
-    if (Bank::where('user_id', $user_id)->exists())
+    if (Bank::where('id', $id)->exists())
         {
-            $bank = Bank::where('user_id', $user_id)->first();
+            $bank = Bank::find($id);
             if (!empty($request->bank_name)) {
                 $bank->bank_name = $request->bank_name;
             }
