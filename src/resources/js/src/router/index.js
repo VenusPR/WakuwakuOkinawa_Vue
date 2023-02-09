@@ -326,6 +326,11 @@ const routes = [
         name: 'account-setting',
         component: () => import(/* webpackChunkName: "users-account-setting" */ '../views/users/account_setting.vue'),
     },
+    {
+        path: '/users/bank',
+        name: 'bank',
+        component: () => import(/* webpackChunkName: "users-account-setting" */ '../views/users/bank.vue'),
+    },
 
     //drag&drop
     {

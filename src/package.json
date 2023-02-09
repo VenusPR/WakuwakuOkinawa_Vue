@@ -39,6 +39,7 @@
         "tail": "^2.2.6",
         "v-mask": "^2.3.0",
         "v-tables-3": "^0.4.7",
+        "vee-validate": "^4.7.4",
         "vue": "^3.2.13",
         "vue-animation-counter": "^1.0.30",
         "vue-clipboard3": "^2.0.0",
@@ -59,7 +60,8 @@
         "vue3-scroll-spy": "^1.0.8",
         "vuex": "^4.0.0",
         "watch": "^1.0.2",
-        "webpack": "^5.0.0"
+        "webpack": "^5.0.0",
+        "yup": "^1.0.0"
     },
     "devDependencies": {
         "@vue/cli-plugin-babel": "~5.0.0-rc.1",

@@ -5,7 +5,7 @@
   },
   "editor.formatOnSave": true,
 
-  // "phpstan.enabled": true,
+  "phpstan.enabled": false,
   // "phpstan.path": "/opt/homebrew/bin/phpstan",
 
   "[php]": {
