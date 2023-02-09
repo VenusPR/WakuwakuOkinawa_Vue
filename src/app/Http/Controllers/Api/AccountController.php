@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Api;
 // namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
@@ -11,11 +12,12 @@ use App\Models\User;
 class AccountController extends Controller
 {
 
-  public function banks(Request $request) {
-    $user_id = 1;
-    $banks = Bank::where('user_id', $user_id)->get();
-    return $banks;
-  }
+    public function banks(Request $request)
+    {
+        $user_id = 1;
+        $banks = Bank::where('user_id', $user_id)->get();
+        return $banks;
+    }
 
   /**
    * 個人のすべての口座を参照
