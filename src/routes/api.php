@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\AccountController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,3 +18,12 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+// Route::apiResource('/banks', AccountController::class);
+
+
+Route::get('/banks', [AccountController::class, 'allBanks']);
+Route::get('/banks/{id}', [AccountController::class, 'oneBank']);
+Route::put('/banks/{id}', [AccountController::class, 'updateBank']);
+Route::post('/banks', [AccountController::class, 'createBank']);
+Route::delete('/banks/{id}', [AccountController::class, 'destoryBank']);
