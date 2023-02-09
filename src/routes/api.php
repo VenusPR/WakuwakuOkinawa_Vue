@@ -2,6 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\DebugController;
 use App\Http\Controllers\Api\AccountController;
 
 /*
@@ -21,6 +23,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 // Route::apiResource('/banks', AccountController::class);
 
+Route::auto('/auth', AuthController::class);   // TODO: テスト用。後で変更
+Route::auto('/debug', DebugController::class); // デバッグ用
+
+Route::auto('/accounts', AccountController::class);
 
 Route::get('/banks', [AccountController::class, 'allBanks']);
 Route::get('/banks/{id}', [AccountController::class, 'oneBank']);
