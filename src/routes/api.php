@@ -28,4 +28,4 @@ Route::auto('/auth', AuthController::class);   // TODO: テスト用。後で変
 Route::auto('/debug', DebugController::class); // デバッグ用
 
 // Route::auto('/accounts', AccountController::class);
-Route::apiResource('/banks/me', BanksController::class);
+Route::apiResource('/banks', BanksController::class);
