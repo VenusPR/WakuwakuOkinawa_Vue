@@ -8,11 +8,31 @@
         <div
             class="main-container"
             id="container"
-            :class="[!$store.state.is_show_sidebar ? 'sidebar-closed sbar-open' : '', $store.state.menu_style === 'collapsible-vertical' ? 'collapsible-vertical-mobile' : '']"
+            :class="[
+                !$store.state.is_show_sidebar ? 'sidebar-closed sbar-open' : '',
+                $store.state.menu_style === 'collapsible-vertical'
+                    ? 'collapsible-vertical-mobile'
+                    : '',
+            ]"
         >
             <!--  BEGIN OVERLAY  -->
-            <div class="overlay" :class="{ show: !$store.state.is_show_sidebar }" @click="$store.commit('toggleSideBar', !$store.state.is_show_sidebar)"></div>
-            <div class="search-overlay" :class="{ show: $store.state.is_show_search }" @click="$store.commit('toggleSearch', !$store.state.is_show_search)"></div>
+            <div
+                class="overlay"
+                :class="{ show: !$store.state.is_show_sidebar }"
+                @click="
+                    $store.commit(
+                        'toggleSideBar',
+                        !$store.state.is_show_sidebar
+                    )
+                "
+            ></div>
+            <div
+                class="search-overlay"
+                :class="{ show: $store.state.is_show_search }"
+                @click="
+                    $store.commit('toggleSearch', !$store.state.is_show_search)
+                "
+            ></div>
             <!-- END OVERLAY -->
 
             <!--  BEGIN SIDEBAR  -->
@@ -30,15 +50,23 @@
             <!--  END CONTENT AREA  -->
 
             <!-- BEGIN APP SETTING LAUNCHER -->
-            <app-settings />
+            <!-- <app-settings /> -->
             <!-- END APP SETTING LAUNCHER -->
         </div>
     </div>
 </template>
 
 <script setup>
-    import Header from '@/components/layout/header.vue';
-    import Sidebar from '@/components/layout/sidebar.vue';
-    import Footer from '@/components/layout/footer.vue';
-    import appSettings from '@/components/app-settings.vue';
+import Footer from "@/components/layout/footer.vue";
+import Header from "@/components/layout/header.vue";
+import Sidebar from "@/components/layout/sidebar.vue";
+</script>
+<script>
+export default {
+    methods: {
+        isSampleURL() {
+            return this.$router.history.current["path"].startsWith("/sample");
+        },
+    },
+};
 </script>

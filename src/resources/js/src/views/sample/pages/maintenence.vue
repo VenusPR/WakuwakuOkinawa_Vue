@@ -9,11 +9,14 @@
                     <h1 class="error-title">Under Maintenance</h1>
                     <p class="error-text">Thank you for visiting us.</p>
                     <p class="text">
-                        We are currently working on making some improvements <br />
+                        We are currently working on making some improvements
+                        <br />
                         to give you better user experience.
                     </p>
                     <p class="text">Please visit us again shortly.</p>
-                    <router-link to="/" class="btn btn-info mt-4">Home</router-link>
+                    <router-link to="/sample/" class="btn btn-info mt-4"
+                        >Home</router-link
+                    >
                 </div>
             </div>
         </div>
@@ -21,8 +24,8 @@
 </template>
 
 <script setup>
-    import '@/assets/sass/pages/error/style-maintanence.scss';
+import "@/assets/sass/pages/error/style-maintanence.scss";
 
-    import { useMeta } from '@/composables/use-meta';
-    useMeta({ title: 'Maintenence' });
+import { useMeta } from "@/composables/use-meta";
+useMeta({ title: "Maintenence" });
 </script>

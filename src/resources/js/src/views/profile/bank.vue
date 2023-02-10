@@ -30,7 +30,7 @@
 
                                     <Field
                                         name="bankName"
-                                        v-model="form.branchName"
+                                        v-model="form.bankName"
                                         type="text"
                                         class="form-control"
                                     />
@@ -71,7 +71,7 @@
                                         <option value="3">その他</option>
                                     </Field>
                                     <ErrorMessage
-                                        name="branchName"
+                                        name="accountType"
                                         class="error"
                                     />
                                 </div>
@@ -186,15 +186,15 @@
 import "@/assets/sass/scrollspyNav.scss";
 import "@/assets/sass/users/user-profile.scss";
 import { useMeta } from "@/composables/use-meta";
+import { ValidationMessage } from "@/messages/validation-message";
 import { ErrorMessage, Field, Form } from "vee-validate";
 import * as yup from "yup";
-
 const schema = yup.object({
-    bankName: yup.string().required(),
-    branchName: yup.string().required(),
-    bankType: yup.string().required(),
-    accountNumber: yup.string().required(),
-    accountName: yup.string().required(),
+    bankName: yup.string().required(ValidationMessage.Required),
+    branchName: yup.string().required(ValidationMessage.Required),
+    accountType: yup.string().required(ValidationMessage.Required),
+    accountNumber: yup.string().required(ValidationMessage.Required),
+    accountName: yup.string().required(ValidationMessage.Required),
 });
 
 useMeta({ title: "受取口座設定" });
@@ -220,7 +220,6 @@ export default {
         async addBank() {
             const { valid } = await this.$refs.form.validate();
             if (!valid) return;
-            console.log("addBank");
         },
         async updateBank() {
             const { valid } = await this.$refs.form.validate();
