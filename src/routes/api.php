@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\DebugController;
 use App\Http\Controllers\Api\AccountController;
+use App\Http\Controllers\Api\BanksController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,10 +27,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::auto('/auth', AuthController::class);   // TODO: テスト用。後で変更
 Route::auto('/debug', DebugController::class); // デバッグ用
 
-Route::auto('/accounts', AccountController::class);
-
-Route::get('/banks', [AccountController::class, 'allBanks']);
-Route::get('/banks/{id}', [AccountController::class, 'oneBank']);
-Route::put('/banks/{id}', [AccountController::class, 'updateBank']);
-Route::post('/banks', [AccountController::class, 'createBank']);
-Route::delete('/banks/{id}', [AccountController::class, 'destoryBank']);
+// Route::auto('/accounts', AccountController::class);
+Route::apiResource('/banks', BanksController::class);
