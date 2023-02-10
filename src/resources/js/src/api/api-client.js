@@ -1,37 +1,44 @@
 import axios from 'axios';
 
 class ApiClient {
-    baseUrl = 'http://localhost' // TODO: 後で変更
+    static baseUrl = 'http://localhost/api' // TODO: 後で変更
 
-    async callPost(path, data) {
-        return await axios.post(baseUrl + path, data);
+    static async callPost(path, data) {
+        return await axios.post(ApiClient.baseUrl + path, data);
     }
 
-    async callGet(path, data) {
-        return await axios.get(this.baseUrl + path, data);
+    static async callGet(path, data) {
+        return await axios.get(ApiClient.baseUrl + path, { data: data });
     }
 
-    async callPut(path, data) {
-        return await axios.put(this.baseUrl + path, data);
+    static async callPut(path, data) {
+        return await axios.put(ApiClient.baseUrl + path, data);
     }
 
-    async callDelete(path, data) {
-        return await axios.delete(this.baseUrl + path, data);
+    static async callDelete(path, data) {
+        return await axios.delete(ApiClient.baseUrl + path, { data: data });
     }
 
-    async getBank() {
-        return await this.callGet('/banks');
+    static async getBank() {
+        // 今現在は口座は１つのみ使用
+        var res = await ApiClient.callGet('/banks');
+        var banks = res.data;
+        if (banks.length > 0) {
+            return banks[0];
+        }
+        return null;
     }
 
-    async addBank(data) {
-        return await this.callPost('/banks', data);
+    static async addBank(data) {
+        return await ApiClient.callPost('/banks', data);
     }
 
-    async updateBank(data) {
-        return await this.callPost('/banks', data);
+    static async updateBank(id, data) {
+        return await ApiClient.callPut('/banks/' + id, data);
     }
 
-    async deleteBank(id) {
-        return await this.callDelete('/banks/' + id);
+    static async deleteBank(id) {
+        return await ApiClient.callDelete('/banks/' + id);
     }
 }
+export default ApiClient;
