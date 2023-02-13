@@ -51,6 +51,25 @@ class ProfilesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
+     * email
+     * last_name
+     * first_name
+     * last_kana
+     * first_kana
+     * birthday
+     * sex 1:女性、2：男性、3:指定しない
+     * zipcode
+     * prefecture_id prefectureテーブルとリレーション 1対1
+     * city
+     * street
+     * building
+     * tel
+     * nearest_station
+     * self_intro
+     * photo_name
+     * emergency_contact_name
+     * emergency_contact_relation
+     * emergency_contact_tel
      */
     public function update(Request $request, int $id)
     {
