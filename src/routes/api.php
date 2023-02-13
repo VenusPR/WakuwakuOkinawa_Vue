@@ -4,8 +4,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\DebugController;
-use App\Http\Controllers\Api\AccountController;
 use App\Http\Controllers\Api\BanksController;
+// use App\Http\Controllers\Api\UsersController;
+use App\Http\Controllers\Api\ProfilesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,3 +30,5 @@ Route::auto('/debug', DebugController::class); // デバッグ用
 
 // Route::auto('/accounts', AccountController::class);
 Route::apiResource('/banks', BanksController::class);
+
+Route::apiResource('/profiles', ProfilesController::class);
