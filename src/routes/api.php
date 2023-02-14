@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\DebugController;
 use App\Http\Controllers\Api\BanksController;
 use App\Http\Controllers\Api\PrefecturesController;
 use App\Http\Controllers\Api\ProfilesController;
+use App\Http\Controllers\Api\ImagesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,8 +32,9 @@ Route::auto('/debug', DebugController::class); // デバッグ用
 // Route::auto('/accounts', AccountController::class);
 Route::apiResource('/banks', BanksController::class);
 
-Route::apiResource('/profiles', ProfilesController::class);
+Route::apiResource('/profiles/me', ProfilesController::class);
 
 // Route::post('/profiles/image', [ProfilesController::class, 'upload']);
 
 Route::apiResource('/prefectures', PrefecturesController::class);
+Route::apiResource('/images', ImagesController::class);
