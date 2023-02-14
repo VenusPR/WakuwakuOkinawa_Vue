@@ -9,6 +9,11 @@ class Prefecture extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'code',
+        'name',
+    ];
+
     public function user()
     {
         return $this->hasOne('App\Models\User');

@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\DebugController;
 use App\Http\Controllers\Api\BanksController;
-// use App\Http\Controllers\Api\UsersController;
+use App\Http\Controllers\Api\PrefecturesController;
 use App\Http\Controllers\Api\ProfilesController;
 
 /*
@@ -32,3 +32,7 @@ Route::auto('/debug', DebugController::class); // デバッグ用
 Route::apiResource('/banks', BanksController::class);
 
 Route::apiResource('/profiles', ProfilesController::class);
+
+// Route::post('/profiles/image', [ProfilesController::class, 'upload']);
+
+Route::apiResource('/prefectures', PrefecturesController::class);
