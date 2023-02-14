@@ -24,17 +24,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-// Route::apiResource('/banks', AccountController::class);
-
 Route::auto('/auth', AuthController::class);   // TODO: テスト用。後で変更
 Route::auto('/debug', DebugController::class); // デバッグ用
 
 // Route::auto('/accounts', AccountController::class);
 Route::apiResource('/banks', BanksController::class);
-
 Route::apiResource('/profiles/me', ProfilesController::class);
-
-// Route::post('/profiles/image', [ProfilesController::class, 'upload']);
-
 Route::apiResource('/prefectures', PrefecturesController::class);
-Route::apiResource('/images', ImagesController::class);
+Route::apiResource('/images/me', ImagesController::class);
