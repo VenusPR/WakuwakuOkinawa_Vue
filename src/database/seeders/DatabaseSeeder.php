@@ -14,12 +14,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
+        \App\Models\User::factory(5)->create();
 
-        \App\Models\User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-            'password' => 'testhello@'
-        ]);
+        $this->call(RegionsSeeder::class);
+        $this->call(PrefecturesSeeder::class);
+
+        // \App\Models\User::factory()->create([
+        //     'last_name' => $faker->lastName,
+        //     'first_name' => 'Test User',
+        //     'email' => 'test@example.com',
+        //     'password' => 'testhello@'
+        // ]);
     }
 }

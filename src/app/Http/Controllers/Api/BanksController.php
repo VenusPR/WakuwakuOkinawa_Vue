@@ -36,18 +36,25 @@ class BanksController extends Controller
     public function store(Request $request)
     {
         $user_id = 1;
-        $bank = new Bank();
-        $bank->user_id = $user_id;
-        $bank->bank_name = $request->bank_name;
-        $bank->branch_name = $request->branch_name;
-        $bank->account_type = $request->account_type;
-        $bank->account_number = $request->account_number;
-        $bank->account_name = $request->account_name;
-        $bank->save();
 
-        return response()->json([
-            'message' => 'created bank'
-        ], 201);
+        if (Bank::where('user_id', $user_id)->exists()) {
+            return response()->json([
+                'message' => 'already exists bank'
+            ], 201);
+        } else {
+            $bank = new Bank();
+            $bank->user_id = $user_id;
+            $bank->bank_name = $request->bank_name;
+            $bank->branch_name = $request->branch_name;
+            $bank->account_type = $request->account_type;
+            $bank->account_number = $request->account_number;
+            $bank->account_name = $request->account_name;
+            $bank->save();
+
+            return response()->json([
+                'message' => 'created bank'
+            ], 201);
+        }
     }
 
     /**

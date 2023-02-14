@@ -18,10 +18,35 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
         'email',
-        'password',
+        'last_name',
+        'created_at',
+        'updated_at',
+        'state',
+        'trash_user_id',
+        'first_name',
+        'last_kana',
+        'first_kana',
+        'last_login_at',
+        'api_token',
+        'identification',
+        'birthday',
+        'sex',
+        'zipcode',
+        'prefecture_id',
+        'city',
+        'street',
+        'building',
+        'tel',
+        'nearest_station',
+        'self_intro',
+        'photo',
+        'photo_name',
+        'emergency_contact_name',
+        'emergency_contact_relation',
+        'emergency_contact_tel'
     ];
+
 
     /**
      * The attributes that should be hidden for serialization.
@@ -41,4 +66,9 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function prefecture()
+    {
+        return $this->belongsTo('App\Models\Prefecture');
+    }
 }
