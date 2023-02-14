@@ -15,8 +15,8 @@ class PrefecturesController extends Controller
      */
     public function index()
     {
-        $pref = Prefecture::all()->pluck('name', 'code')->toArray();
-        return $pref;
+        $pref = Prefecture::select('code', 'name')->get();
+        return response()->json(['prefectures' => $pref]);
     }
 
     /**
