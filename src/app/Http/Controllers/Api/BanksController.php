@@ -40,21 +40,20 @@ class BanksController extends Controller
         if (Bank::where('user_id', $user_id)->exists()) {
             return response()->json([
                 'message' => 'already exists bank'
-            ], 404);
-        } else {
-            $bank = new Bank();
-            $bank->user_id = $user_id;
-            $bank->bank_name = $request->bank_name;
-            $bank->branch_name = $request->branch_name;
-            $bank->account_type = $request->account_type;
-            $bank->account_number = $request->account_number;
-            $bank->account_name = $request->account_name;
-            $bank->save();
-
-            return response()->json([
-                'message' => 'created bank'
-            ], 200);
+            ], 400);
         }
+        $bank = new Bank();
+        $bank->user_id = $user_id;
+        $bank->bank_name = $request->bank_name;
+        $bank->branch_name = $request->branch_name;
+        $bank->account_type = $request->account_type;
+        $bank->account_number = $request->account_number;
+        $bank->account_name = $request->account_name;
+        $bank->save();
+
+        return response()->json([
+            'message' => 'created bank'
+        ], 200);
     }
 
     /**
@@ -70,7 +69,7 @@ class BanksController extends Controller
         } else {
             return response()->json([
                 'message' => 'bank not found'
-            ], 404);
+            ], 400);
         }
         return $bank;
     }
@@ -92,23 +91,32 @@ class BanksController extends Controller
     public function update(Request $request, int $id)
     {
         // $user_id = 1;
-        if (Bank::where('id', $id)->exists()) {
-            $bank = Bank::find($id);
-            $bank->bank_name = $request->bank_name;
-            $bank->branch_name = $request->branch_name;
-            $bank->account_type = $request->account_type;
-            $bank->account_number = $request->account_number;
-            $bank->account_name = $request->account_name;
-            $bank->save();
-
-            return response()->json([
-                'message' => 'updated bank info'
-            ], 200);
-        } else {
+        if (!Bank::where('id', $id)->exists()) {
             return response()->json([
                 'message' => 'bank not found'
-            ], 404);
+            ], 400);
         }
+        $bank = Bank::find($id);
+        if (!empty($request->bank_name)) {
+            $bank->bank_name = $request->bank_name;
+        }
+        if (!empty($request->branch_name)) {
+            $bank->branch_name = $request->branch_name;
+        }
+        if (isset($request->account_type)) {
+            $bank->account_type = $request->account_type;
+        }
+        if (isset($request->account_number)) {
+            $bank->account_number = $request->account_number;
+        }
+        if (isset($request->account_name)) {
+            $bank->account_name = $request->account_name;
+        }
+        $bank->save();
+
+        return response()->json([
+            'message' => 'updated bank info'
+        ], 200);
     }
 
     /**
@@ -119,17 +127,16 @@ class BanksController extends Controller
      */
     public function destroy($id)
     {
-        if (Bank::where('id', $id)->exists()) {
-            $bank = Bank::find($id);
-            $bank->delete();
-
-            return response()->json([
-                'message' => 'delete bank'
-            ], 200);
-        } else {
+        if (!Bank::where('id', $id)->exists()) {
             return response()->json([
                 'message' => 'bank not found'
-            ], 404);
+            ], 400);
         }
+        $bank = Bank::find($id);
+        $bank->delete();
+
+        return response()->json([
+            'message' => 'delete bank'
+        ], 200);
     }
 }

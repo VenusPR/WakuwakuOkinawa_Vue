@@ -46,26 +46,25 @@ class ImagesController extends Controller
             ]
         ]);
 
-        if ($request->file('file')->isValid([])) {
-            $path = $request->file->store('public');
-            // $user = Auth::user();
-            $user = User::find($user_id);
-            $file_name = basename($path);
-            //ファイルの削除
-            Storage::disk('public')->delete($user->photo_name);
-            // $user->photo = $file_path;
-            $user->photo_name = $file_name;
-
-            $user->save();
-
-            return response()->json([
-                'message' => 'successfully upload image'
-            ], 200);
-        } else {
+        if (!$request->file('file')->isValid([])) {
             return response()->json([
                 'message' => 'donot upload image'
-            ], 404);
+            ], 400);
         }
+        $path = $request->file->store('public');
+        // $user = Auth::user();
+        $user = User::find($user_id);
+        $file_name = basename($path);
+        //ファイルの削除
+        Storage::disk('public')->delete($user->photo_name);
+        // $user->photo = $file_path;
+        $user->photo_name = $file_name;
+
+        $user->save();
+
+        return response()->json([
+            'message' => 'successfully upload image'
+        ], 200);
     }
 
     /**
