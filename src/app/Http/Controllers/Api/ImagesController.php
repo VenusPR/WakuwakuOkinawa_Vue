@@ -58,9 +58,13 @@ class ImagesController extends Controller
 
             $user->save();
 
-            return response()->json(['success' => 'successfully upload image.']);
+            return response()->json([
+                'message' => 'successfully upload image'
+            ], 200);
         } else {
-            return response()->json(['error' => 'donot upload image.']);
+            return response()->json([
+                'message' => 'donot upload image'
+            ], 404);
         }
     }
 
