@@ -50,7 +50,6 @@ class ProfilesController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      * email
      * last_name
@@ -72,14 +71,20 @@ class ProfilesController extends Controller
      * emergency_contact_relation
      * emergency_contact_tel
      */
-    public function update(Request $request, int $id)
+    public function update(Request $request, String $me)
     {
-        if (!User::where('id', $id)->exists()) {
+        $user_id = 1;
+        if ($me != 'me') {
+            return response()->json([
+                'message' => 'can not access'
+            ], 400);
+        }
+        if (!User::where('id', $user_id)->exists()) {
             return response()->json([
                 'message' => 'user not found'
             ], 400);
         }
-        $user = User::find($id);
+        $user = User::find($user_id);
         if (!empty($request->email)) {
             $user->email = $request->email;
         }
