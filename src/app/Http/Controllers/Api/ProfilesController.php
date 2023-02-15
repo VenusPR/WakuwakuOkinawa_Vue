@@ -18,10 +18,7 @@ class ProfilesController extends Controller
     public function index()
     {
         //
-        $user_id = 1;
-        $users = User::with('prefecture')->find($user_id);
-        // $users = User::find($user_id)->prefecture;
-        return $users;
+
     }
 
     /**
@@ -41,9 +38,17 @@ class ProfilesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(String $me)
     {
-        //
+        $user_id = 1;
+        if ($me != 'me') {
+            return response()->json([
+                'message' => 'can not access'
+            ], 400);
+        }
+        $users = User::with('prefecture')->find($user_id);
+        // $users = User::find($user_id)->prefecture;
+        return $users;
     }
 
     /**
