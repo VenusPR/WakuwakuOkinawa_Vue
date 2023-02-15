@@ -79,12 +79,12 @@ class ProfilesController extends Controller
                 'message' => 'can not access'
             ], 400);
         }
-        if (!User::where('id', $user_id)->exists()) {
+        $user = User::where('id', $user_id)->first();
+        if (!$user) {
             return response()->json([
                 'message' => 'user not found'
-            ], 400);
+            ], 404);
         }
-        $user = User::find($user_id);
         if (!empty($request->email)) {
             $user->email = $request->email;
         }

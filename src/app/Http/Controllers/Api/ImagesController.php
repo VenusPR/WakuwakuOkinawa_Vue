@@ -48,7 +48,7 @@ class ImagesController extends Controller
 
         if (!$request->file('file')->isValid([])) {
             return response()->json([
-                'message' => 'donot upload image'
+                'message' => 'failed to upload image'
             ], 400);
         }
         $path = $request->file->store('public');
@@ -63,7 +63,7 @@ class ImagesController extends Controller
         $user->save();
 
         return response()->json([
-            'message' => 'successfully upload image'
+            'message' => 'Image uploaded successfully'
         ], 200);
     }
 

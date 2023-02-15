@@ -64,12 +64,11 @@ class BanksController extends Controller
      */
     public function show($id)
     {
-        if (Bank::where('id', $id)->exists()) {
-            $bank = Bank::find($id);
-        } else {
+        $bank = Bank::where('id', $id)->first();
+        if (!$bank) {
             return response()->json([
                 'message' => 'bank not found'
-            ], 400);
+            ], 404);
         }
         return $bank;
     }
@@ -91,12 +90,12 @@ class BanksController extends Controller
     public function update(Request $request, int $id)
     {
         // $user_id = 1;
-        if (!Bank::where('id', $id)->exists()) {
+        $bank = Bank::where('id', $id)->first();
+        if (!$bank) {
             return response()->json([
                 'message' => 'bank not found'
-            ], 400);
+            ], 404);
         }
-        $bank = Bank::find($id);
         if (!empty($request->bank_name)) {
             $bank->bank_name = $request->bank_name;
         }
@@ -127,12 +126,12 @@ class BanksController extends Controller
      */
     public function destroy($id)
     {
-        if (!Bank::where('id', $id)->exists()) {
+        $bank = Bank::where('id', $id)->first();
+        if (!$bank) {
             return response()->json([
                 'message' => 'bank not found'
-            ], 400);
+            ], 404);
         }
-        $bank = Bank::find($id);
         $bank->delete();
 
         return response()->json([
