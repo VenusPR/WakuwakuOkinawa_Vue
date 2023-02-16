@@ -22,9 +22,13 @@
                             <div>
                                 <h5>売上の受取口座</h5>
                             </div>
-                            <!-- 新規作成フォーム -->
-                            <Form ref="form" :validationSchema="schema">
-                                <div v-if="isInputMode">
+                            <!-- 新規作成/編集フォーム -->
+                            <Form
+                                ref="form"
+                                v-slot="{ errors }"
+                                :validationSchema="schema"
+                            >
+                                <div>
                                     <div>
                                         <label
                                             for="email"
@@ -131,26 +135,29 @@
 
                                 <!-- 登録済みの口座表示 -->
                                 <div v-if="!isInputMode">
-                                    <ul class="contacts-block list-unstyled">
-                                        <li class="contacts-block__item">
+                                    <ul
+                                        class="list-unstyled"
+                                        style="margin-top: 1rem"
+                                    >
+                                        <li>
                                             <span>銀行名：</span>
                                             <span>{{ form.bankName }}</span>
                                         </li>
-                                        <li class="contacts-block__item">
+                                        <li>
                                             <span>支店名：</span>
                                             <span>{{ form.branchName }}</span>
                                         </li>
-                                        <li class="contacts-block__item">
+                                        <li>
                                             <span>口座種別：</span>
                                             <span>{{ form.accountType }}</span>
                                         </li>
-                                        <li class="contacts-block__item">
+                                        <li>
                                             <span>口座番号：</span>
                                             <span>{{
                                                 form.accountNumber
                                             }}</span>
                                         </li>
-                                        <li class="contacts-block__item">
+                                        <li>
                                             <span>口座名義：</span>
                                             <span>{{ form.accountName }}</span>
                                         </li>
@@ -164,19 +171,36 @@
                                         margin-bottom: 1rem;
                                     "
                                 ></div>
+
+                                <div
+                                    v-if="Object.keys(errors).length > 0"
+                                    class="error"
+                                    style="margin-bottom: 1rem"
+                                >
+                                    入力項目を確認してください。
+                                </div>
+                                <div
+                                    v-if="errorMessage"
+                                    class="error"
+                                    style="margin-bottom: 1rem"
+                                >
+                                    {{ errorMessage }}
+                                </div>
                                 <div>
                                     <button
                                         v-if="isInputMode && !bankData"
                                         type="button"
                                         class="btn btn-primary"
+                                        :disabled="isSubmitting"
                                         @click="addBank"
                                     >
-                                        追加
+                                        登録
                                     </button>
                                     <button
                                         v-if="!isInputMode && bankData"
                                         type="button"
                                         class="btn btn-primary"
+                                        :disabled="isSubmitting"
                                         @click="() => (isInputMode = true)"
                                     >
                                         編集
@@ -186,6 +210,7 @@
                                         <button
                                             type="button"
                                             class="btn btn-primary"
+                                            :disabled="isSubmitting"
                                             @click="updateBank"
                                         >
                                             更新
@@ -193,6 +218,7 @@
                                         <button
                                             type="button"
                                             class="btn btn-danger"
+                                            :disabled="isSubmitting"
                                             @click="deleteBank"
                                         >
                                             削除
@@ -213,28 +239,32 @@ import ApiClient from "@/api/api-client";
 import "@/assets/sass/scrollspyNav.scss";
 import "@/assets/sass/users/user-profile.scss";
 import { useMeta } from "@/composables/use-meta";
-import { ValidationMessage } from "@/messages/validation-message";
+import { Validation } from "@/utils/validation";
 import { ErrorMessage, Field, Form } from "vee-validate";
 import * as yup from "yup";
 
 const schema = yup.object({
-    bankName: yup.string().required(ValidationMessage.Required),
-    branchName: yup.string().required(ValidationMessage.Required),
-    accountType: yup.string().required(ValidationMessage.Required),
-    accountNumber: yup.string().required(ValidationMessage.Required),
-    accountName: yup.string().required(ValidationMessage.Required),
+    bankName: Validation.Required,
+    branchName: Validation.Required,
+    accountType: Validation.Required,
+    accountNumber: Validation.Required,
+    accountName: Validation.Required,
 });
 
 useMeta({ title: "受取口座設定" });
 </script>
+
 <script>
 export default {
     data() {
         return {
             isLoaded: false,
+            isSubmitting: false,
+            errorMessage: "",
             bankData: null,
             isInputMode: true,
             form: {
+                id: "",
                 bankName: "",
                 branchName: "",
                 bankType: "",
@@ -249,8 +279,6 @@ export default {
         };
     },
     async mounted() {
-        console.log("mounted!");
-
         await this.fetchBank();
         if (this.bankData) {
             this.isInputMode = false;
@@ -259,68 +287,81 @@ export default {
     },
     methods: {
         async fetchBank() {
-            var bank = await ApiClient.getBank();
+            var res = await ApiClient.getBank();
+            if (res.isError) {
+                this.errorMessage = CommonMessage.Error;
+                return;
+            }
+            var bank = res.data;
             if (bank) {
-                console.log("bank", bank);
+                this.form = bank;
                 this.bankData = bank;
-                this.form.bankName = bank.bank_name;
-                this.form.branchName = bank.branch_name;
-                this.form.accountType = bank.account_type;
-                this.form.accountName = bank.account_name;
-                this.form.accountNumber = bank.account_number;
             } else {
                 this.bankData = null;
-                this.form.bankName = "";
-                this.form.branchName = "";
-                this.form.accountType = "";
-                this.form.accountName = "";
-                this.form.accountNumber = "";
             }
         },
         async addBank() {
             const { valid } = await this.$refs.form.validate();
             if (!valid) return;
-
-            var res = await ApiClient.addBank({
-                bank_name: this.form.bankName,
-                branch_name: this.form.branchName,
-                account_type: this.form.accountType,
-                account_number: this.form.accountNumber,
-                account_name: this.form.accountName,
-            });
-            await this.fetchBank();
-            this.isInputMode = false;
+            try {
+                this.isSubmitting = true;
+                var res = await ApiClient.addBank({
+                    bank_name: this.form.bankName,
+                    branch_name: this.form.branchName,
+                    account_type: this.form.accountType,
+                    account_number: this.form.accountNumber,
+                    account_name: this.form.accountName,
+                });
+                if (res.isError) {
+                    this.errorMessage = CommonMessage.Error;
+                    return;
+                }
+                await this.fetchBank();
+            } finally {
+                this.isInputMode = false;
+                this.isSubmitting = false;
+            }
         },
         async updateBank() {
             const { valid } = await this.$refs.form.validate();
             if (!valid) return;
-            console.log("updateBank");
 
-            var res = await ApiClient.updateBank(this.bankData.id, {
-                bank_name: this.form.bankName,
-                branch_name: this.form.branchName,
-                account_type: this.form.accountType,
-                account_number: this.form.accountNumber,
-                account_name: this.form.accountName,
-            });
-            await this.fetchBank();
-            this.isInputMode = false;
+            try {
+                this.isSubmitting = true;
+                var res = await ApiClient.updateBank(this.form.id, this.form);
+                if (res.isError) {
+                    this.errorMessage = CommonMessage.Error;
+                    return;
+                }
+                await this.fetchBank();
+            } finally {
+                this.isInputMode = false;
+                this.isSubmitting = false;
+            }
         },
         async deleteBank() {
-            console.log("deleteBank");
-            var res = await ApiClient.deleteBank(this.bankData.id);
-            await this.fetchBank();
-            this.isInputMode = true;
+            try {
+                this.isSubmitting = true;
+                var res = await ApiClient.deleteBank(this.bankData.id);
+                if (res.isError) {
+                    this.errorMessage = CommonMessage.Error;
+                    return;
+                }
+                await this.fetchBank();
+            } finally {
+                this.isInputMode = true;
+                this.isSubmitting = false;
+            }
         },
     },
 };
 </script>
-<style scoped>
+<style lang="scss" scoped>
 .btn {
     margin-left: 0.5rem;
     margin-right: 0.5rem;
 }
 .error {
-    color: red;
+    color: red; // TODO: 後で共通化
 }
 </style>
