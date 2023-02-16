@@ -198,7 +198,6 @@ class ProfilesController extends Controller
                 'max:2048',
             ]
         ]);
-        dd('test');
 
         if (!$request->file('file')->isValid([])) {
             return response()->json([
