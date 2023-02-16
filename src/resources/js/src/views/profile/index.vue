@@ -185,7 +185,6 @@
                                         style="background-color: gray"
                                     ></div>
                                     <Field
-                                        v-model="profilePhotoFile"
                                         type="file"
                                         class="form-control"
                                         style="margin-top: 1rem"
