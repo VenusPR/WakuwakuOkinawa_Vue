@@ -22,14 +22,15 @@ services:
     command: >
       /bin/bash -c "./tools/start_app_dev.sh"
 
-  front:
-    platform: linux/amd64
-    image: node:18-slim
-    volumes:
-      - ./src:/var/www/html
-    working_dir: /var/www/html
-    command: 
-      /bin/bash -c "npm i && npm run watch-poll"
+  # # docker内でwatchやhotが使えないため、今はコメントアウト
+  # front:
+  #   platform: linux/amd64
+  #   image: node:18-slim
+  #   volumes:
+  #     - ./src:/var/www/html
+  #   working_dir: /var/www/html
+  #   command: 
+  #     /bin/bash -c "npm i && npm run watch-poll"
 
   db:
     platform: linux/amd64

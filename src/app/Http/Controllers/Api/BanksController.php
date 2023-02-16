@@ -18,14 +18,14 @@ class BanksController extends Controller
     {
         $user_id = 1;
         $banks = Bank::where('user_id', $user_id)->get();
-        return $banks;
+        return ["banks" => $banks];
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * 
+     *
      * * bank_name
      * branch_name
      * account_type
@@ -78,13 +78,13 @@ class BanksController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * 
+     *
      * * bank_name
      * branch_name
      * account_type
      * account_number
      * account_name
-     * 
+     *
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, int $id)
