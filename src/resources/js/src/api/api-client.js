@@ -13,47 +13,62 @@ class ApiException extends Error {
 class ApiClient {
     static baseUrl = 'http://localhost/api' // TODO: 後で変更
 
-    static async callPost(path, data, option = {}) {
-        option = { ...{ useConvert: true }, ...option }
+    static async callPost(path, data, config = null, option = {}) {
+        option = { ...{ useConvertRequest: true, useConvertResponse: true }, ...option }
 
-        var reqData = option.useConvert ? ApiClient.toRequestData(data) : data
-        var res = await axios.post(ApiClient.baseUrl + path, reqData);
-        if (option.useConvert) {
+        const headers = { 'Content-Type': 'multipart/form-data' };
+
+        var reqData = option.useConvertRequest ? ApiClient.toRequestData(data) : data
+        var res = await axios.post(ApiClient.baseUrl + path, reqData, { headers });
+        if (option.useConvertResponse) {
             return ApiClient.getApiResult(res)
         }
         return res
     }
 
-    static async callGet(path, data, option = {}) {
-        option = { ...{ useConvert: true }, ...option }
+    static async callGet(path, data, config = {}, option = {}) {
+        option = { ...{ useConvertRequest: true, useConvertResponse: true }, ...option }
 
-        var reqData = option.useConvert ? ApiClient.toRequestData(data) : data
-        var res = await axios.get(ApiClient.baseUrl + path, { data: reqData });
-        if (option.useConvert) {
+        config = { ...config, ...{ data: reqData } }
+
+        var reqData = option.useConvertRequest ? ApiClient.toRequestData(data) : data
+        var res = await axios.get(ApiClient.baseUrl + path, config);
+        if (option.useConvertResponse) {
             return ApiClient.getApiResult(res)
         }
         return res
     }
 
-    static async callPut(path, data, option = {}) {
-        option = { ...{ useConvert: true }, ...option }
+    static async callPut(path, data, config = {}, option = {}) {
+        option = { ...{ useConvertRequest: true, useConvertResponse: true }, ...option }
 
-        var reqData = option.useConvert ? ApiClient.toRequestData(data) : data
-        var res = await axios.put(ApiClient.baseUrl + path, reqData);
-        if (option.useConvert) {
+        var reqData = option.useConvertRequest ? ApiClient.toRequestData(data) : data
+        var res = await axios.put(ApiClient.baseUrl + path, reqData, config);
+        if (option.useConvertResponse) {
             return ApiClient.getApiResult(res)
         }
         return res
     }
 
-    static async callDelete(path, option = {}) {
-        option = { ...{ useConvert: true }, ...option }
+    static async callDelete(path, config = {}, option = {}) {
+        option = { ...{ useConvertResponse: true }, ...option }
 
-        var res = await axios.delete(ApiClient.baseUrl + path);
-        if (option.useConvert) {
+        var res = await axios.delete(ApiClient.baseUrl + path, config);
+        if (option.useConvertResponse) {
             return ApiClient.getApiResult(res)
         }
         return res
+    }
+
+    static async callPostFormData(path, data, config = null, option = {}) {
+        option = { ...{ useConvertRequest: true, useConvertResponse: true }, ...option }
+
+        config = config ? config : {}
+        var headers = config.headers ? config.headers : {}
+        headers = { ...headers, ...{ 'Content-Type': 'multipart/form-data' } }
+
+        config = { ...config, headers: headers }
+        return await ApiClient.callPost(path, data, config, { useConvertRequest: false })
     }
 
     static isError(res) {
@@ -114,16 +129,9 @@ class ApiClient {
     }
 
     static async updateProfilePhoto(data) {
-        //TODO: 後で実装
-        // let formData = new FormData()
-        // let config = {
-        //     headers: {
-        //         'content-type': 'multipart/form-data',
-        //     },
-        // }
-        // let fileData = JSON.stringify(data)
-        // formData.append('file', fileData)
-        // return await ApiClient.callPost('/profiles/me/image', formData, config);
+        let formData = new FormData()
+        formData.append('file', data)
+        return await ApiClient.callPostFormData('/profiles/me/photo', formData);
     }
 }
 export default ApiClient;

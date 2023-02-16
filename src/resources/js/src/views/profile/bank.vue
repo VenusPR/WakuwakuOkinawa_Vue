@@ -28,7 +28,7 @@
                                 v-slot="{ errors }"
                                 :validationSchema="schema"
                             >
-                                <div>
+                                <div v-if="isInputMode">
                                     <div>
                                         <label
                                             for="email"
@@ -173,7 +173,10 @@
                                 ></div>
 
                                 <div
-                                    v-if="Object.keys(errors).length > 0"
+                                    v-if="
+                                        isInputMode &&
+                                        Object.keys(errors).length > 0
+                                    "
                                     class="error"
                                     style="margin-bottom: 1rem"
                                 >

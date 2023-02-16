@@ -175,8 +175,8 @@
                                     </div>
 
                                     <img
-                                        v-if="form.photo"
-                                        :src="form.photo"
+                                        v-if="form.photoName"
+                                        :src="form.photoName"
                                         class="profile-photo"
                                     />
                                     <div
@@ -185,10 +185,12 @@
                                         style="background-color: gray"
                                     ></div>
                                     <input
+                                        ref="profilePhotoFile"
                                         type="file"
                                         class="form-control"
                                         style="margin-top: 1rem"
                                         placeholder=""
+                                        :onchange="onChangeProfilePhotoFile"
                                     />
                                 </div>
 
@@ -292,18 +294,6 @@
                                     </button>
                                 </div>
                             </Form>
-                            <div style="margin-top: 1rem">
-                                以下は画像アップロードのテスト用。不要になった際に削除
-                            </div>
-                            <Form
-                                action="/api/profiles/me/image"
-                                method="POST"
-                                class="shadow p-12"
-                                enctype="multipart/form-data"
-                            >
-                                <input type="file" name="file" />
-                                <button type="submit">Submit</button>
-                            </Form>
                         </div>
                     </div>
                 </div>
@@ -393,16 +383,32 @@ export default {
                 var res = await ApiClient.updateProfile(this.form);
                 if (res.isError) {
                     // TODO: 後でトーストへ変更
-                    errorMessage = CommonMessage.Error;
+                    errorMessage = CommonMessage.FailedTo("プロフィールの更新");
                     return;
                 }
 
                 await this.fetchProfile();
 
-                // TODO: このあたりに画像アップロードの処理を追記
+                // プロフィール画像の更新
+                if (this.profilePhotoFile) {
+                    var res = await ApiClient.updateProfilePhoto(
+                        this.profilePhotoFile
+                    );
+                    if (res.isError) {
+                        errorMessage =
+                            CommonMessage.FailedTo("プロフィール画像の更新");
+                        return;
+                    }
+                    this.$refs.profilePhotoFile.value = "";
+                    this.profilePhotoFile = null;
+                }
             } finally {
                 this.isSubmitting = false;
             }
+        },
+        onChangeProfilePhotoFile(e) {
+            if (e.target.files.length === 0) return;
+            this.profilePhotoFile = e.target.files[0];
         },
     },
 };
