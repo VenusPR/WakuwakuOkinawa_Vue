@@ -184,7 +184,7 @@
                                         class="profile-photo"
                                         style="background-color: gray"
                                     ></div>
-                                    <Field
+                                    <input
                                         type="file"
                                         class="form-control"
                                         style="margin-top: 1rem"
