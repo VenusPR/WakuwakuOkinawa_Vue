@@ -180,7 +180,7 @@ class ProfilesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function upPhoto(Request $request)
+    public function updatePhoto(Request $request)
     {
         $user_id = 1;
         //ユーザー自身が変更するとき
@@ -215,7 +215,7 @@ class ProfilesController extends Controller
         $user = User::find($user_id);
         $file_name = basename($path);
         //ファイルがある場合
-        if (!empty($user->photo_name)) {
+        if ($user->photo_name) {
             //ファイルの削除
             Storage::disk('public')->delete($user->photo_name);
         }
