@@ -135,12 +135,6 @@ class ProfilesController extends Controller
         if (isset($request->self_intro)) {
             $user->self_intro = $request->self_intro;
         }
-        if (isset($request->photo)) {
-            $user->photo = $request->photo;
-        }
-        if (isset($request->photo_name)) {
-            $user->photo_name = $request->photo_name;
-        }
         if (isset($request->emergency_contact_name)) {
             $user->emergency_contact_name = $request->emergency_contact_name;
         }
@@ -167,5 +161,73 @@ class ProfilesController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    /**
+     * 画像ファイルの取得
+     *
+     */
+    public function getPhoto()
+    {
+        $user_id = 1;
+        $file_name = User::find($user_id)->select('photo_name')->first();
+        return response()->file(Storage::path("public/" . $file_name['photo_name']));
+    }
+
+    /**
+     * 画像ファイルのアップロード
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function upPhoto(Request $request)
+    {
+        $user_id = 1;
+        //ユーザー自身が変更するとき
+        $this->validate($request, [
+            'file' => [
+                // 必須
+                'required',
+                // アップロードされたファイルであること
+                'file', //postmanではkeyをこれにすること！
+                // 画像ファイルであること
+                'image',
+                // MIMEタイプを指定
+                'mimes:jpeg,png,jpg',
+                // 容量
+                'max:2048',
+            ]
+        ]);
+        dd('test');
+
+        if (!$request->file('file')->isValid([])) {
+            return response()->json([
+                'message' => 'failed to upload image'
+            ], 400);
+        }
+        // dd($request->file('file'));
+        if (empty($request->file('file'))) {
+            return response()->json([
+                'message' => '画像が選択されていません'
+            ], 400);
+        }
+        $path = $request->file->store('public');
+        // $user = Auth::user();
+        $user = User::find($user_id);
+        $file_name = basename($path);
+        //ファイルがある場合
+        if (!empty($user->photo_name)) {
+            //ファイルの削除
+            Storage::disk('public')->delete($user->photo_name);
+        }
+
+        // $user->photo = $file_path;
+        $user->photo_name = $file_name;
+
+        $user->save();
+
+        return response()->json([
+            'message' => 'Image uploaded successfully'
+        ], 200);
     }
 }
