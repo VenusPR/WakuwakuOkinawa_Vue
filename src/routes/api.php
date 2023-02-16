@@ -29,7 +29,7 @@ Route::auto('/debug', DebugController::class); // デバッグ用
 
 // Route::auto('/accounts', AccountController::class);
 Route::apiResource('/banks', BanksController::class);
-Route::get('/profiles/me/image', [ImagesController::class, 'index']);
-Route::post('/profiles/me/image', [ImagesController::class, 'store']);
+Route::get('/profiles/me/photo', [ProfilesController::class, 'getPhoto']);
+Route::put('/profiles/me/photo', [ProfilesController::class, 'updatePhoto']);
 Route::apiResource('/profiles', ProfilesController::class);
 Route::apiResource('/prefectures', PrefecturesController::class);
