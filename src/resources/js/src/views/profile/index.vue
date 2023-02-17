@@ -100,6 +100,7 @@
                                             <div
                                                 v-for="option in sexTypeOptions"
                                                 style="display: inline"
+                                                :key="option.value"
                                             >
                                                 <input
                                                     type="radio"
@@ -146,7 +147,7 @@
                                         >自己紹介</label
                                     >
                                     <Field
-                                        v-slot="{ field, errors }"
+                                        v-slot="{ field }"
                                         v-model="form.selfIntro"
                                         name="selfIntro"
                                     >

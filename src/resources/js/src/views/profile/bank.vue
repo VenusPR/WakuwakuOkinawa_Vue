@@ -84,6 +84,7 @@
                                                 :selected="
                                                     option == form.accountType
                                                 "
+                                                :key="option.value"
                                             >
                                                 {{ option.value }}
                                             </option>
