@@ -7,7 +7,7 @@ use App\Http\Controllers\Api\DebugController;
 use App\Http\Controllers\Api\BanksController;
 use App\Http\Controllers\Api\PrefecturesController;
 use App\Http\Controllers\Api\ProfilesController;
-use App\Http\Controllers\Api\ImagesController;
+use App\Http\Controllers\Api\KidsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,3 +32,4 @@ Route::apiResource('/banks', BanksController::class);
 Route::post('/profiles/me/photo', [ProfilesController::class, 'updatePhoto']);
 Route::apiResource('/profiles', ProfilesController::class);
 Route::apiResource('/prefectures', PrefecturesController::class);
+Route::apiResource('/kids', KidsController::class);
