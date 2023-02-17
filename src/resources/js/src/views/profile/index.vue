@@ -388,8 +388,6 @@ export default {
                     return;
                 }
 
-                await this.fetchProfile();
-
                 // プロフィール画像の更新
                 if (this.profilePhotoFile) {
                     var res = await ApiClient.updateProfilePhoto(
@@ -403,6 +401,8 @@ export default {
                     this.$refs.profilePhotoFile.value = "";
                     this.profilePhotoFile = null;
                 }
+
+                await this.fetchProfile();
             } finally {
                 this.isSubmitting = false;
             }
