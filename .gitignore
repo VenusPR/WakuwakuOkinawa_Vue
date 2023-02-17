@@ -1,6 +1,7 @@
 src/node_modules
 src/.pnpm-store
-src/public/
+src/public/*
+!src/public/storage
 src/files/
 
 src/storage/*.key
