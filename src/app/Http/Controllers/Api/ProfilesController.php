@@ -171,7 +171,9 @@ class ProfilesController extends Controller
     {
         $user_id = 1;
         $file_name = User::find($user_id)->select('photo_name')->first();
-        return response()->file(Storage::path("public/" . $file_name['photo_name']));
+        $file_path = "storage/" . $file_name['photo_name'];
+        // return response()->file(Storage::path("public/" . $file_name['photo_name']));
+        return $file_path;
     }
 
     /**
@@ -226,7 +228,8 @@ class ProfilesController extends Controller
         $user->save();
 
         return response()->json([
-            'message' => 'Image uploaded successfully'
+            'message' => 'Image uploaded successfully',
+            'file_name' => $file_name
         ], 200);
     }
 }
