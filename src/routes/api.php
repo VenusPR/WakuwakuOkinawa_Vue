@@ -29,7 +29,6 @@ Route::auto('/debug', DebugController::class); // デバッグ用
 
 // Route::auto('/accounts', AccountController::class);
 Route::apiResource('/banks', BanksController::class);
-Route::get('/profiles/me/photo', [ProfilesController::class, 'getPhoto']);
 Route::post('/profiles/me/photo', [ProfilesController::class, 'updatePhoto']);
 Route::apiResource('/profiles', ProfilesController::class);
 Route::apiResource('/prefectures', PrefecturesController::class);

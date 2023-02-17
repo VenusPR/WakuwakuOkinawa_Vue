@@ -164,19 +164,6 @@ class ProfilesController extends Controller
     }
 
     /**
-     * 画像ファイルの取得
-     *
-     */
-    public function getPhoto()
-    {
-        $user_id = 1;
-        $file_name = User::find($user_id)->select('photo_name')->first();
-        $file_path = "storage/" . $file_name['photo_name'];
-        // return response()->file(Storage::path("public/" . $file_name['photo_name']));
-        return $file_path;
-    }
-
-    /**
      * 画像ファイルのアップロード
      *
      * @param  \Illuminate\Http\Request  $request
@@ -212,7 +199,7 @@ class ProfilesController extends Controller
                 'message' => '画像が選択されていません'
             ], 400);
         }
-        $path = $request->file->store('public');
+        $path = $request->file->store('public/photo');
         // $user = Auth::user();
         $user = User::find($user_id);
         $file_name = basename($path);
@@ -229,7 +216,7 @@ class ProfilesController extends Controller
 
         return response()->json([
             'message' => 'Image uploaded successfully',
-            'file_name' => $file_name
+            'file_name' => 'storage/photo' . $file_name
         ], 200);
     }
 }
