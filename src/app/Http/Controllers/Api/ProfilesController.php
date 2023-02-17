@@ -199,10 +199,10 @@ class ProfilesController extends Controller
                 'message' => '画像が選択されていません'
             ], 400);
         }
-        $path = $request->file->store('public/photo');
+        $path = $request->file->store('public/profile/photo');
         // $user = Auth::user();
         $user = User::find($user_id);
-        $file_name = basename($path);
+        $file_name = 'storage/profile/photo/' . basename($path);
         //ファイルがある場合
         if ($user->photo_name) {
             //ファイルの削除
@@ -216,7 +216,7 @@ class ProfilesController extends Controller
 
         return response()->json([
             'message' => 'Image uploaded successfully',
-            'file_name' => 'storage/photo' . $file_name
+            'file_name' => $file_name
         ], 200);
     }
 }
