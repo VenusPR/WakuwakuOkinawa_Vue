@@ -341,6 +341,7 @@ export default {
                 tel: "",
                 email: "",
                 sex: "",
+                photoName: "",
                 nearestStation: "",
                 selfIntro: "",
                 emergencyContactName: "",
@@ -445,8 +446,9 @@ export default {
     }
 }
 .profile-photo {
-    width: 200px;
     height: 200px;
+    width: 200px;
+    object-fit: contain;
     margin: auto;
     display: block;
 }
