@@ -14,6 +14,7 @@ const routes = [
     { path: '/', name: 'Home', component: Home },
     { path: '/profile', name: 'Profile', component: () => import('../views/profile/index.vue'), },
     { path: '/profile/bank', name: 'Bank', component: () => import('../views/profile/bank.vue'), },
+    { path: '/profile/kids', name: 'Kid', component: () => import('../views/profile/kids.vue'), },
 
     // ------- 以下は sample --------------------------------
 
