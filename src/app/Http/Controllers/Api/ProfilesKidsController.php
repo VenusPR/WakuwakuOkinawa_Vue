@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-use App\Models\Kid;
+use App\Models\UserKid;
 
-class KidsController extends Controller
+class ProfilesKidsController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,7 +18,7 @@ class KidsController extends Controller
     {
         //
         $user_id = 1;
-        $kids = Kid::where('user_id', $user_id)->get();
+        $kids = UserKid::where('user_id', $user_id)->get();
         return ["kids" => $kids];
     }
 
@@ -32,12 +32,12 @@ class KidsController extends Controller
     {
         $user_id = 1;
 
-        if (Kid::where('user_id', $user_id)->count() > 2) {
+        if (UserKid::where('user_id', $user_id)->count() > 2) {
             return response()->json([
                 'message' => 'すでに３人登録されています'
             ], 400);
         }
-        $kid = new Kid();
+        $kid = new UserKid();
         $kid->user_id = $user_id;
         $kid->last_name = $request->last_name;
         $kid->first_name = $request->first_name;
@@ -62,7 +62,7 @@ class KidsController extends Controller
      */
     public function show($id)
     {
-        $kid = Kid::where('id', $id)->first();
+        $kid = UserKid::where('id', $id)->first();
         if (!$kid) {
             return response()->json([
                 'message' => 'kid not found'
@@ -81,7 +81,7 @@ class KidsController extends Controller
     public function update(Request $request, int $id)
     {
         // $user_id = 1;
-        $kid = Kid::where('id', $id)->first();
+        $kid = UserKid::where('id', $id)->first();
         if (!$kid) {
             return response()->json([
                 'message' => 'kid not found'
@@ -126,7 +126,7 @@ class KidsController extends Controller
      */
     public function destroy($id)
     {
-        $kid = Kid::where('id', $id)->first();
+        $kid = UserKid::where('id', $id)->first();
         if (!$kid) {
             return response()->json([
                 'message' => 'kid not found'
