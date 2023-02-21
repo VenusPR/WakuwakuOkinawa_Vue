@@ -133,5 +133,31 @@ class ApiClient {
         formData.append('file', data)
         return await ApiClient.callPostFormData('/profiles/me/photo', formData);
     }
+
+    // ----------------------------------------
+    // kids
+    // ----------------------------------------
+    static async getKid() {
+        var res = await ApiClient.callGet('/profiles/me/kids');
+
+        // NOTE: 子供は3人まで
+        // var kid = (res.data && res.data.kids.length > 2) ? res.data.kids[0] : null
+        // res.kid = kid
+        res.data = res.data.kids[0];
+        // console.log(res)
+        return res;
+    }
+
+    static async addKid(data) {
+        return await ApiClient.callPost('/profiles/me/kids', data);
+    }
+
+    static async updateKid(id, data) {
+        return await ApiClient.callPut('/profiles/me/kids/' + id, data);
+    }
+
+    static async deleteKid(id) {
+        return await ApiClient.callDelete('/profiles/me/kids/' + id);
+    }
 }
 export default ApiClient;
