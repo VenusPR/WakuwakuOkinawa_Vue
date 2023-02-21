@@ -6,7 +6,6 @@
   "editor.formatOnSave": true,
 
   "phpstan.enabled": false,
-  // "phpstan.path": "/opt/homebrew/bin/phpstan",
 
   "[php]": {
     "editor.defaultFormatter": "bmewburn.vscode-intelephense-client"
