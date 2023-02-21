@@ -49,9 +49,7 @@ class ProfilesKidsController extends Controller
         $kid->other_notes = $request->other_notes;
         $kid->save();
 
-        return response()->json([
-            'message' => 'created kid'
-        ], 200);
+        return ['message' => 'created kid'];
     }
 
     /**
@@ -113,9 +111,7 @@ class ProfilesKidsController extends Controller
         }
         $kid->save();
 
-        return response()->json([
-            'message' => 'updated kid info'
-        ], 200);
+        return ['message' => 'updated kid info'];
     }
 
     /**
@@ -134,8 +130,6 @@ class ProfilesKidsController extends Controller
         }
         $kid->delete();
 
-        return response()->json([
-            'message' => 'delete kid'
-        ], 200);
+        return ['message' => 'delete kid'];
     }
 }
