@@ -12,6 +12,7 @@ import Home from '../views/index.vue';
 
 const routes = [
     { path: '/', name: 'Home', component: Home },
+    { path: '/login', name: 'Login', component: () => import('../views/login.vue'), },
     { path: '/profile', name: 'Profile', component: () => import('../views/profile/index.vue'), },
     { path: '/profile/bank', name: 'Bank', component: () => import('../views/profile/bank.vue'), },
 
