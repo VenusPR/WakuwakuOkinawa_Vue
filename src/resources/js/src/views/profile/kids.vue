@@ -54,7 +54,7 @@
                                             >お名前（名）</label
                                         >
                                         <Field
-                                            name="lastName"
+                                            name="firstName"
                                             v-model="form.firstName"
                                             type="text"
                                             class="form-control"
@@ -82,18 +82,33 @@
                                             name="lastKana"
                                             class="error"
                                         />
-                                    </div>
-                                    <div>
                                         <label
                                             for="email"
                                             class="col-form-label"
-                                            >性別</label
+                                            >かな（名）</label
                                         >
                                         <Field
-                                            v-model="form.sex"
-                                            name="sex"
-                                            class="form-select"
-                                            as="select"
+                                            v-model="form.firstKana"
+                                            name="firstKana"
+                                            type="text"
+                                            class="form-control"
+                                            placeholder=""
+                                            required="true"
+                                        />
+                                        <ErrorMessage
+                                            name="firstKana"
+                                            class="error"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label for="sex" class="col-form-label"
+                                        >性別</label>
+
+                                        <Field
+                                        v-slot="{ field }"
+                                        v-model="form.sex"
+                                        name="sex"
+                                        type="radio"
                                         >
                                         <div class="input-radio">
                                             <div
@@ -120,18 +135,25 @@
                                     </div>
                                     <div>
                                         <label
-                                            for="email"
+                                            for="allergy"
                                             class="col-form-label"
                                             >アレルギー</label
                                         >
                                         <Field
+                                            v-slot="{ field }"
                                             v-model="form.allergy"
                                             name="allergy"
-                                            type="text"
-                                            class="form-control"
-                                            placeholder=""
-                                            required="false"
-                                        />
+                                        >
+                                            <textarea
+                                                v-bind="field"
+                                                name="allergy"
+                                                style="
+                                                    display: block;
+                                                    width: 100%;
+                                                    height: 120px;
+                                                "
+                                            />
+                                        </Field>
                                         <ErrorMessage
                                             name="allergy"
                                             class="error"
@@ -139,18 +161,25 @@
                                     </div>
                                     <div>
                                         <label
-                                            for="email"
+                                            for="otherNotes"
                                             class="col-form-label"
                                             >その他特記事項</label
                                         >
                                         <Field
+                                            v-slot="{ field }"
                                             v-model="form.otherNotes"
                                             name="otherNotes"
-                                            type="text"
-                                            class="form-control"
-                                            placeholder=""
-                                            required="false"
-                                        />
+                                        >
+                                            <textarea
+                                                v-bind="field"
+                                                name="otherNotes"
+                                                style="
+                                                    display: block;
+                                                    width: 100%;
+                                                    height: 120px;
+                                                "
+                                            />
+                                        </Field>
                                         <ErrorMessage
                                             name="otherNotes"
                                             class="error"
