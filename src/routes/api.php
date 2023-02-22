@@ -32,4 +32,5 @@ Route::apiResource('/banks', BanksController::class);
 Route::post('/profiles/me/photo', [ProfilesController::class, 'updatePhoto']);
 Route::apiResource('/profiles', ProfilesController::class);
 Route::apiResource('/prefectures', PrefecturesController::class);
+Route::post('/profiles/me/kids/{id}/photo', [ProfilesKidsController::class, 'updatePhoto']);
 Route::apiResource('/profiles/me/kids', ProfilesKidsController::class);

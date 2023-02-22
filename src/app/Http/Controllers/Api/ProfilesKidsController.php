@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\Models\UserKid;
+use App\Models\User;
+use Illuminate\Support\Facades\Storage;
+
 
 class ProfilesKidsController extends Controller
 {
@@ -78,7 +81,6 @@ class ProfilesKidsController extends Controller
      */
     public function update(Request $request, int $id)
     {
-        // $user_id = 1;
         $kid = UserKid::where('id', $id)->first();
         if (!$kid) {
             return response()->json([
@@ -131,5 +133,62 @@ class ProfilesKidsController extends Controller
         $kid->delete();
 
         return ['message' => 'delete kid'];
+    }
+
+    /**
+     * 画像ファイルのアップロード
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function updatePhoto(Request $request, int $id)
+    {
+
+        //ユーザー自身が変更するとき
+        $this->validate($request, [
+            'file' => [
+                // 必須
+                'required',
+                // アップロードされたファイルであること
+                'file', //postmanではkeyをこれにすること！
+                // 画像ファイルであること
+                'image',
+                // MIMEタイプを指定
+                'mimes:jpeg,png,jpg',
+                // 容量
+                'max:2048',
+            ]
+        ]);
+
+        if (!$request->file('file')->isValid([])) {
+            return response()->json([
+                'message' => 'failed to upload image'
+            ], 400);
+        }
+        // dd($request->file('file'));
+        if (empty($request->file('file'))) {
+            return response()->json([
+                'message' => '画像が選択されていません'
+            ], 400);
+        }
+        $path = $request->file->store('public/profile/kids_photo');
+        // $user = Auth::user();
+        $kid = UserKid::where('id', $id)->first();
+        $file_name = 'storage/profile/kids_photo/' . basename($path);
+        //ファイルがある場合
+        if ($kid->photo_name) {
+            //ファイルの削除
+            Storage::disk('public')->delete($kid->photo_name);
+        }
+
+        // $user->photo = $file_path;
+        $kid->photo_name = $file_name;
+
+        $kid->save();
+
+        return [
+            'message' => 'Image uploaded successfully',
+            'file_name' => $file_name
+        ];
     }
 }
