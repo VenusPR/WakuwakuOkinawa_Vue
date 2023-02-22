@@ -186,9 +186,9 @@ class ProfilesKidsController extends Controller
 
         $kid->save();
 
-        return response()->json([
+        return [
             'message' => 'Image uploaded successfully',
             'file_name' => $file_name
-        ], 200);
+        ];
     }
 }
