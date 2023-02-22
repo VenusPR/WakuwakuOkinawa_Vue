@@ -231,7 +231,16 @@
                                     <tr>
                                         <th>お写真：</th>
                                         <td style="white-space: pre-line">
-                                            {{ profileAddress }}
+                                            <img
+                                                v-if="form.photoName"
+                                                :src="form.photoName"
+                                                class="profile-photo"
+                                            />
+                                            <div
+                                                v-else
+                                                class="profile-photo"
+                                                style="background-color: gray"
+                                            ></div>
                                         </td>
                                     </tr>
                                 </table>
