@@ -101,6 +101,25 @@
                                         />
                                     </div>
                                     <div>
+                                        <label
+                                            for="email"
+                                            class="col-form-label"
+                                            >生年月日</label
+                                        >
+                                        <Field
+                                            v-model="form.birthday"
+                                            name="birthday"
+                                            type="text"
+                                            class="form-control"
+                                            placeholder=""
+                                            required="true"
+                                        />
+                                        <ErrorMessage
+                                            name="birthday"
+                                            class="error"
+                                        />
+                                    </div>
+                                    <div>
                                         <label for="sex" class="col-form-label"
                                         >性別</label>
 
@@ -183,6 +202,33 @@
                                         <ErrorMessage
                                             name="otherNotes"
                                             class="error"
+                                        />
+                                    </div>
+                                    <div style="margin-top: 2rem">
+                                    <h5>プロフィール写真</h5>
+                                    </div>
+                                    <div>
+                                        <div style="margin-bottom: 1rem">
+                                            フォーマット： JPG / JPEG / GIF / PNG
+                                        </div>
+
+                                        <img
+                                            v-if="form.photoName"
+                                            :src="form.photoName"
+                                            class="profile-photo"
+                                        />
+                                        <div
+                                            v-else
+                                            class="profile-photo"
+                                            style="background-color: gray"
+                                        ></div>
+                                        <input
+                                            ref="profilePhotoFile"
+                                            type="file"
+                                            class="form-control"
+                                            style="margin-top: 1rem"
+                                            placeholder=""
+                                            :onchange="onChangeProfilePhotoFile"
                                         />
                                     </div>
                                 </div>
@@ -353,6 +399,7 @@ export default {
             kidData: null,
             isInputMode: true,
             form: {
+                id: "",
                 lastName: "",
                 firstName: "",
                 lastKana: "",
@@ -386,11 +433,6 @@ export default {
                 return;
             }
 
-            // if (res.data) {
-            //     this.form = res.data;
-            //     // this.KidAddress = `〒${this.form.zipcode}\n${this.form.city}${this.form.street}${this.form.street}`;
-            // }
-
             var kid = res.data;
             if (kid) {
                 this.form = kid;
@@ -399,19 +441,22 @@ export default {
                 this.kidData = null;
             }
         },
-        async saveKid() {
+        async updateKid() {
             this.errorMessage = "";
-            this.isSubmitting = true;
             try {
                 const { valid } = await this.$refs.form.validate();
                 if (!valid) return;
 
-                var res = await ApiClient.updateKid(this.form);
+                this.isSubmitting = true;
+                var res = await ApiClient.updateKid(this.form.id, this.form);
                 if (res.isError) {
+                    this.errorMessage = CommonMessage.Error;
                     // TODO: 後でトーストへ変更
-                    errorMessage = CommonMessage.FailedTo("プロフィールの更新");
+                    errorMessage = CommonMessage.FailedTo("お子様用情報の更新");
                     return;
                 }
+
+                
 
                 // プロフィール画像の更新
                 if (this.KidPhotoFile) {
@@ -420,15 +465,17 @@ export default {
                     );
                     if (res.isError) {
                         errorMessage =
-                            CommonMessage.FailedTo("プロフィール画像の更新");
+                            CommonMessage.FailedTo("お子様用写真の更新");
                         return;
                     }
                     this.$refs.KidPhotoFile.value = "";
                     this.KidPhotoFile = null;
                 }
+                
 
                 await this.fetchKid();
             } finally {
+                this.isInputMode = false;
                 this.isSubmitting = false;
             }
         },
