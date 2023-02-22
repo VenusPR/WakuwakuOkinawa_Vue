@@ -160,10 +160,10 @@ class ApiClient {
         return await ApiClient.callDelete('/profiles/me/kids/' + id);
     }
 
-    static async updateKidPhoto(data) {
+    static async updateKidPhoto(id,data) {
         let formData = new FormData()
         formData.append('file', data)
-        return await ApiClient.callPostFormData('/profiles/me/kids/1/photo', formData);
+        return await ApiClient.callPostFormData('/profiles/me/kids/' +id+'/photo/', formData);
     }
 }
 export default ApiClient;

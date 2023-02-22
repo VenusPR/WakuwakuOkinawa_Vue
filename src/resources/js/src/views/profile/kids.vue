@@ -215,20 +215,20 @@
                                         <img
                                             v-if="form.photoName"
                                             :src="form.photoName"
-                                            class="profile-photo"
+                                            class="kid-photo"
                                         />
                                         <div
                                             v-else
-                                            class="profile-photo"
+                                            class="kid-photo"
                                             style="background-color: gray"
                                         ></div>
                                         <input
-                                            ref="profilePhotoFile"
+                                            ref="KidPhotoFile"
                                             type="file"
                                             class="form-control"
                                             style="margin-top: 1rem"
                                             placeholder=""
-                                            :onchange="onChangeProfilePhotoFile"
+                                            :onchange="onChangeKidPhotoFile"
                                         />
                                     </div>
                                 </div>
@@ -278,13 +278,17 @@
                                         <th>お写真：</th>
                                         <td style="white-space: pre-line">
                                             <img
+                                                src="/kids/storage/profile/kids_photo/d43UXEJdCuufP6c0j4MgacpOqNGHpLx4ZOJ4VuHf.jpg"
+                                                class="kid-photo"
+                                            />
+                                            <img
                                                 v-if="form.photoName"
                                                 :src="form.photoName"
-                                                class="profile-photo"
+                                                class="kid-photo"
                                             />
                                             <div
                                                 v-else
-                                                class="profile-photo"
+                                                class="kid-photo"
                                                 style="background-color: gray"
                                             ></div>
                                         </td>
@@ -409,7 +413,7 @@ export default {
                 allergy: "",
                 otherNotes: "",
             },
-            profilePhotoFile: null,
+            kidPhotoFile: null,
             profileAddress: "",
             sexTypeOptions: [
                 { name: "女の子", value: "1", key: "woman" },
@@ -424,6 +428,8 @@ export default {
             this.isInputMode = false;
         }
         this.isLoaded = true;
+        console.log('ここだよ');
+        console.log(this.form.photoName);
     },
     methods: {
         async fetchKid() {
@@ -442,6 +448,7 @@ export default {
             }
         },
         async updateKid() {
+            
             this.errorMessage = "";
             try {
                 const { valid } = await this.$refs.form.validate();
@@ -461,6 +468,7 @@ export default {
                 // プロフィール画像の更新
                 if (this.KidPhotoFile) {
                     var res = await ApiClient.updateKidPhoto(
+                        this.form.id,
                         this.KidPhotoFile
                     );
                     if (res.isError) {
