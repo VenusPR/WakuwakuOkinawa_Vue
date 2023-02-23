@@ -174,7 +174,7 @@ class ProfilesKidsController extends Controller
         $path = $request->file->store('public/profile/kids_photo');
         // $user = Auth::user();
         $kid = UserKid::where('id', $id)->first();
-        $file_name = 'storage/profile/kids_photo/' . basename($path);
+        $file_name = '/storage/profile/kids_photo/' . basename($path);
         //ファイルがある場合
         if ($kid->photo_name) {
             //ファイルの削除

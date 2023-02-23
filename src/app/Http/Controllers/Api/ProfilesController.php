@@ -202,7 +202,7 @@ class ProfilesController extends Controller
         $path = $request->file->store('public/profile/photo');
         // $user = Auth::user();
         $user = User::find($user_id);
-        $file_name = 'storage/profile/photo/' . basename($path);
+        $file_name = '/storage/profile/photo/' . basename($path);
         //ファイルがある場合
         if ($user->photo_name) {
             //ファイルの削除

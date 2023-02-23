@@ -51,9 +51,7 @@ class BanksController extends Controller
         $bank->account_name = $request->account_name;
         $bank->save();
 
-        return response()->json([
-            'message' => 'created bank'
-        ], 200);
+        return ['message' => 'created bank'];
     }
 
     /**
@@ -113,9 +111,7 @@ class BanksController extends Controller
         }
         $bank->save();
 
-        return response()->json([
-            'message' => 'updated bank info'
-        ], 200);
+        return ['message' => 'updated bank info'];
     }
 
     /**
@@ -134,8 +130,6 @@ class BanksController extends Controller
         }
         $bank->delete();
 
-        return response()->json([
-            'message' => 'delete bank'
-        ], 200);
+        return ['message' => 'delete bank'];
     }
 }

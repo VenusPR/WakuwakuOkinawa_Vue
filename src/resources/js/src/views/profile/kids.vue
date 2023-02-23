@@ -278,10 +278,6 @@
                                         <th>お写真：</th>
                                         <td style="white-space: pre-line">
                                             <img
-                                                src="/kids/storage/profile/kids_photo/d43UXEJdCuufP6c0j4MgacpOqNGHpLx4ZOJ4VuHf.jpg"
-                                                class="kid-photo"
-                                            />
-                                            <img
                                                 v-if="form.photoName"
                                                 :src="form.photoName"
                                                 class="kid-photo"
