@@ -1,20 +1,35 @@
 import { defineStore } from "pinia";
+import { auth, signInWithEmailAndPassword } from '../firebaseConfig';
 
-export const useUserStore = defineStore("user", {
+export const userUserStore = defineStore("user", {
     state: () => {
-        return { user: { loggedIn: false, data: null } };
+        return { isLoggedIn: false, userCredential: null, user: null };
     },
     actions: {
-        increment(value = 1) {
-            this.count += value;
+        async loginByEmail({ email, password }) {
+            return signInWithEmailAndPassword(auth, email, password)
+                .then(res => {
+                    this.userCredential = res.user
+                    this.isLoggedIn = true
+                    return true
+
+                }).catch(e => {
+                    if (e.code != 400) {
+                        console.error(e);
+                    }
+                    return false
+                });
         },
+        // async register(context, { email, password, name }) {
+        //     const response = await createUserWithEmailAndPassword(auth, email, password)
+        //     if (response) {
+        //         context.commit('setUser', response.user)
+        //         // response.user.updateProfile({ displayName: name })
+        //     } else {
+        //         throw new Error('Unable to register user')
+        //     }
+        // },
     },
     getters: {
-        doubleCount: (state) => {
-            return state.count * 2;
-        },
-        doublePlusOne() {
-            return this.doubleCount + 1
-        },
     },
 });

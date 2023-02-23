@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getAuth } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 
 const firebaseConfig = {
     apiKey: process.env.MIX_FIREBASE_API_KEY,
@@ -19,5 +19,5 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth()
 
 
-export { app, auth };
+export { app, auth, signInWithEmailAndPassword };
 

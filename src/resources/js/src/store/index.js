@@ -1,5 +1,4 @@
 import { createStore } from 'vuex';
-import { auth } from '../firebaseConfig';
 import i18n from '../i18n';
 
 export default new createStore({
@@ -29,11 +28,6 @@ export default new createStore({
             { code: 'sv', name: 'Swedish' },
             { code: 'tr', name: 'Turkish' },
         ],
-        // -- application data --
-        user: {
-            loggedIn: false,
-            data: null
-        }
     },
     mutations: {
         setLayout(state, payload) {
@@ -94,57 +88,13 @@ export default new createStore({
             localStorage.setItem('layout_style', value);
             state.layout_style = value;
         },
-
-        setLoggedIn(state, value) {
-            state.user.loggedIn = value;
-        },
-
-        setUser(state, data) {
-            state.user.data = data;
-        }
     },
     getters: {
         layout(state) {
             return state.layout;
         },
-
-        user(state) {
-            return state.user;
-        }
     },
     actions: {
-        async register(context, { email, password, name }) {
-            const response = await createUserWithEmailAndPassword(auth, email, password)
-            if (response) {
-                context.commit('setUser', response.user)
-                // response.user.updateProfile({ displayName: name })
-            } else {
-                throw new Error('Unable to register user')
-            }
-        },
-
-        async login(context, { email, password }) {
-            console.log('login 1');
-            const response = await signInWithEmailAndPassword(auth, email, password)
-            console.log('login 2');
-            if (response) {
-                context.commit('setUser', response.user)
-            } else {
-                throw new Error('login failed')
-            }
-        },
-
-        async fetchUser(context, user) {
-            context.commit("setLoggedIn", user !== null);
-            if (user) {
-                context.commit("setUser", {
-                    displayName: user.displayName,
-                    email: user.email
-                });
-            } else {
-                context.commit("setUser", null);
-            }
-        }
     },
     modules: {},
 });

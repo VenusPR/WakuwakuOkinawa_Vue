@@ -7,22 +7,12 @@
                 <div class="panel">
                     <div class="panel-body">
                         <div class="d-flex justify-content-between">
-                            <h3 style="padding-bottom: 1rem">プロフィール</h3>
+                            <h3 style="padding-bottom: 1rem">ログイン</h3>
                         </div>
-                        <div
-                            style="
-                                border: solid 0.5px gray;
-                                margin-top: 1rem;
-                                margin-bottom: 1rem;
-                            "
-                        ></div>
+                        <div class="divider"></div>
 
-                        <!-- 変更フォーム -->
-                        <Form
-                            ref="form"
-                            v-slot="{ errors }"
-                            :validationSchema="schema"
-                        >
+                        <!-- ログインフォーム -->
+                        <Form ref="form" :validationSchema="schema">
                             <div>
                                 <label for="email" class="col-form-label"
                                     >メールアドレス</label
@@ -50,39 +40,54 @@
                             </div>
 
                             <div
-                                style="
-                                    border: solid 0.5px gray;
-                                    margin-top: 1rem;
-                                    margin-bottom: 1rem;
-                                "
-                            ></div>
+                                class="checkbox-info custom-control custom-checkbox mt-3 mb-5"
+                            >
+                                <input
+                                    type="checkbox"
+                                    class="custom-control-input"
+                                    id="chk_info"
+                                    :checked="rememberLoggedIn"
+                                    v-model="rememberLoggedIn"
+                                />
+                                <label
+                                    class="custom-control-label color-gray"
+                                    for="chk_info"
+                                >
+                                    ログイン状態を記録する
+                                </label>
+                            </div>
 
                             <div
-                                v-if="Object.keys(errors).length > 0"
-                                class="error"
+                                v-if="errorMessage"
+                                class="error mx-auto"
                                 style="margin-bottom: 1rem"
                             >
-                                入力項目を確認してください。
+                                {{ errorMessage }}
                             </div>
-                            <!-- <div
-                                    v-if="errorMessage"
-                                    class="error"
-                                    style="margin-bottom: 1rem"
-                                >
-                                    {{ errorMessage }}
-                                </div> -->
 
-                            <div>
+                            <div class="text-center">
                                 <button
                                     type="button"
-                                    class="btn btn-primary"
+                                    class="btn btn-info"
                                     :disabled="isSubmitting"
                                     @click="login"
                                 >
-                                    ログイン {{ counterStore.count }}
+                                    ログイン
                                 </button>
                             </div>
+
+                            <div class="text-center mt-4">
+                                <a href="#" class="text-link"
+                                    >パスワードを忘れた場合 ＞</a
+                                >
+                            </div>
                         </Form>
+
+                        <div class="divider"></div>
+
+                        <div class="text-center mt-4">
+                            <a href="#" class="text-link">新規登録へ ＞</a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -91,7 +96,8 @@
 </template>
 
 <script setup>
-import { useCounterStore } from "@/store/counter";
+import { userUserStore } from "@/store/user";
+import { storage } from "@/utils/storage";
 
 import "@/assets/sass/scrollspyNav.scss";
 import "@/assets/sass/users/user-profile.scss";
@@ -105,13 +111,12 @@ const schema = yup.object({
     password: Validation.Required,
 });
 
-const counterStore = useCounterStore();
-
 useMeta({ title: "ログイン" });
 </script>
 
 <script>
-const counterStore = useCounterStore();
+const userStore = userUserStore();
+
 export default {
     data() {
         return {
@@ -122,47 +127,42 @@ export default {
                 email: "",
                 password: "",
             },
+            rememberLoggedIn: false,
         };
     },
     mounted() {
         console.log("Component mounted.");
+
+        this.rememberLoggedIn = storage.getRememberLoggedIn();
+        console.log("this.rememberLoggedIn", this.rememberLoggedIn);
+
         this.isLoaded = true;
     },
     methods: {
         async login() {
-            // const store = useStore();
+            var isOk = await userStore.loginByEmail({
+                email: this.form.email,
+                password: this.form.password,
+            });
+            if (!isOk) {
+                this.errorMessage =
+                    "ログインに失敗しました。\nメールアドレスまたはパスワードが間違っています。";
+                return;
+            }
 
-            counterStore.increment();
+            if (this.rememberLoggedIn) {
+                storage.setUserAccessToken(
+                    userStore.userCredential.accessToken
+                );
+            }
+            storage.setRememberLoggedIn(this.rememberLoggedIn);
 
-            // console.log("store");
-            // try {
-            //     console.log("dispatch login1 ");
-            //     await this.$store.dispatch("login", {
-            //         email: form.email,
-            //         password: form.password,
-            //     });
-            //     console.log("dispatch login2 ");
-            //     this.errorMessage = "OK";
-            //     // router.push("/");
-            // } catch (err) {
-            //     this.errorMessage = "NG";
-            //     // this.errorMessage = err.message;
-            // }
+            console.log("userStore.user", userStore.user);
+
+            //TODO: 現在はログイン後、プロフィール画面へ遷移するようにしているが、後で変更
+            this.$router.push({ path: "/profile" });
         },
     },
 };
 </script>
-<style lang="scss" scoped>
-.btn {
-    margin-left: 0.5rem;
-    margin-right: 0.5rem;
-}
-
-.error {
-    color: red; // TODO: 後で共通化
-}
-
-.text-link {
-    color: #0d95f6; // TODO: 後で共通化
-}
-</style>
+<style lang="scss" scoped></style>

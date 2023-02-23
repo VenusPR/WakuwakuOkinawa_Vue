@@ -1,5 +1,7 @@
 import { defineStore } from "pinia";
 
+// テスト用のカウンターstore
+// 後で削除する
 export const useCounterStore = defineStore("counter", {
     state: () => {
         return { count: 0 };
