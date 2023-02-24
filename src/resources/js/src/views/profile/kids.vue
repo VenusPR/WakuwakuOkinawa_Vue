@@ -40,7 +40,7 @@
                                         >
                                         <Field
                                             name="lastName"
-                                            v-model="form.lastName"
+                                            v-model="form[0].lastName"
                                             type="text"
                                             class="form-control"
                                         />
@@ -55,7 +55,7 @@
                                         >
                                         <Field
                                             name="firstName"
-                                            v-model="form.firstName"
+                                            v-model="form[0].firstName"
                                             type="text"
                                             class="form-control"
                                         />
@@ -71,7 +71,7 @@
                                             >かな（姓）</label
                                         >
                                         <Field
-                                            v-model="form.lastKana"
+                                            v-model="form[0].lastKana"
                                             name="lastKana"
                                             type="text"
                                             class="form-control"
@@ -88,7 +88,7 @@
                                             >かな（名）</label
                                         >
                                         <Field
-                                            v-model="form.firstKana"
+                                            v-model="form[0].firstKana"
                                             name="firstKana"
                                             type="text"
                                             class="form-control"
@@ -107,7 +107,7 @@
                                             >生年月日</label
                                         >
                                         <Field
-                                            v-model="form.birthday"
+                                            v-model="form[0].birthday"
                                             name="birthday"
                                             type="text"
                                             class="form-control"
@@ -125,7 +125,7 @@
 
                                         <Field
                                         v-slot="{ field }"
-                                        v-model="form.sex"
+                                        v-model="form[0].sex"
                                         name="sex"
                                         type="radio"
                                         >
@@ -160,7 +160,7 @@
                                         >
                                         <Field
                                             v-slot="{ field }"
-                                            v-model="form.allergy"
+                                            v-model="form[0].allergy"
                                             name="allergy"
                                         >
                                             <textarea
@@ -186,7 +186,7 @@
                                         >
                                         <Field
                                             v-slot="{ field }"
-                                            v-model="form.otherNotes"
+                                            v-model="form[0].otherNotes"
                                             name="otherNotes"
                                         >
                                             <textarea
@@ -213,8 +213,8 @@
                                         </div>
 
                                         <img
-                                            v-if="form.photoName"
-                                            :src="form.photoName"
+                                            v-if="form[0].photoName"
+                                            :src="form[0].photoName"
                                             class="kid-photo"
                                         />
                                         <div
@@ -239,47 +239,47 @@
                                     <tr>
                                         <th>お名前：</th>
                                         <td>
-                                            {{ form.lastName }}
-                                            {{ form.firstName }}
+                                            {{ form[0].lastName }}
+                                            {{ form[0].firstName }}
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>ふりがな：</th>
                                         <td>
-                                            {{ form.lastKana }}
-                                            {{ form.firstKana }}
+                                            {{ form[0].lastKana }}
+                                            {{ form[0].firstKana }}
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>生年月日：</th>
                                         <td>
-                                            {{ form.birthday }}
+                                            {{ form[0].birthday }}
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>性別：</th>
                                         <td style="white-space: pre-line">
-                                            {{ form.sex }}
+                                            {{ form[0].sex }}
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>アレルギー：</th>
                                         <td style="white-space: pre-line">
-                                            {{ form.allergy }}
+                                            {{ form[0].allergy }}
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>その他特記事項：</th>
                                         <td style="white-space: pre-line">
-                                            {{ form.otherNotes }}
+                                            {{ form[0].otherNotes }}
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>お写真：</th>
                                         <td style="white-space: pre-line">
                                             <img
-                                                v-if="form.photoName"
-                                                :src="form.photoName"
+                                                v-if="form[0].photoName"
+                                                :src="form[0].photoName"
                                                 class="kid-photo"
                                             />
                                             <div
@@ -294,7 +294,7 @@
 
                                 <div
                                     style="
-                                        border: solid 0.5px gray;
+                                         border: solid 0.5px gray;
                                         margin-top: 1rem;
                                         margin-bottom: 1rem;
                                     "
@@ -319,7 +319,7 @@
                                 </div>
                                 <div>
                                     <button
-                                        v-if="isInputMode && !kidData"
+                                        v-if="isInputMode && !kidsData"
                                         type="button"
                                         class="btn btn-primary"
                                         :disabled="isSubmitting"
@@ -328,7 +328,7 @@
                                         登録
                                     </button>
                                     <button
-                                        v-if="!isInputMode && kidData"
+                                        v-if="!isInputMode && kidsData"
                                         type="button"
                                         class="btn btn-primary"
                                         :disabled="isSubmitting"
@@ -337,7 +337,7 @@
                                         編集
                                     </button>
 
-                                    <template v-if="isInputMode && kidData">
+                                    <template v-if="isInputMode && kidsData">
                                         <button
                                             type="button"
                                             class="btn btn-primary"
@@ -396,19 +396,43 @@ export default {
             isLoaded: false,
             isSubmitting: false,
             errorMessage: "",
-            kidData: null,
+            kidsData: null,
             isInputMode: true,
-            form: {
-                id: "",
-                lastName: "",
-                firstName: "",
-                lastKana: "",
-                firstKana: "",
-                birthday: "",
-                sex: "",
-                allergy: "",
-                otherNotes: "",
-            },
+            form: [
+                    {
+                        id: "",
+                        lastName: "",
+                        firstName: "",
+                        lastKana: "",
+                        firstKana: "",
+                        birthday: "",
+                        sex: "",
+                        allergy: "",
+                        otherNotes: "",
+                    },
+                    {
+                        id: "",
+                        lastName: "",
+                        firstName: "",
+                        lastKana: "",
+                        firstKana: "",
+                        birthday: "",
+                        sex: "",
+                        allergy: "",
+                        otherNotes: "",
+                    },
+                    {
+                        id: "",
+                        lastName: "",
+                        firstName: "",
+                        lastKana: "",
+                        firstKana: "",
+                        birthday: "",
+                        sex: "",
+                        allergy: "",
+                        otherNotes: "",
+                    }
+                ],
             kidPhotoFile: null,
             profileAddress: "",
             sexTypeOptions: [
@@ -419,28 +443,26 @@ export default {
         };
     },
     async mounted() {
-        await this.fetchKid();
-        if (this.kidData) {
+        await this.fetchKids();
+        if (this.kidsData) {
             this.isInputMode = false;
         }
         this.isLoaded = true;
-        console.log('ここだよ');
-        console.log(this.form.photoName);
     },
     methods: {
-        async fetchKid() {
-            var res = await ApiClient.getKid();
+        async fetchKids() {
+            var res = await ApiClient.getKids();
             if (res.isError) {
                 this.errorMessage = CommonMessage.Error;
                 return;
             }
 
-            var kid = res.data;
-            if (kid) {
-                this.form = kid;
-                this.kidData = kid;
+         var kids = res.data;
+            if (kids) {
+                this.form = kids;
+                this.kidsData = kids;
             } else {
-                this.kidData = null;
+                this.kidsData = null;
             }
         },
         async updateKid() {
@@ -464,7 +486,7 @@ export default {
                 // プロフィール画像の更新
                 if (this.KidPhotoFile) {
                     var res = await ApiClient.updateKidPhoto(
-                        this.form.id,
+                        this.form[kids_number].id,
                         this.KidPhotoFile
                     );
                     if (res.isError) {
@@ -477,7 +499,7 @@ export default {
                 }
                 
 
-                await this.fetchKid();
+                await this.fetchKids();
             } finally {
                 this.isInputMode = false;
                 this.isSubmitting = false;

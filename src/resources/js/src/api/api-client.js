@@ -137,13 +137,13 @@ class ApiClient {
     // ----------------------------------------
     // kids
     // ----------------------------------------
-    static async getKid() {
+    static async getKids() {
         var res = await ApiClient.callGet('/profiles/me/kids');
 
         // NOTE: 子供は3人まで
         // var kid = (res.data && res.data.kids.length > 2) ? res.data.kids[0] : null
         // res.kid = kid
-        res.data = res.data.kids[0];
+        res.data = res.data.kids;
         // console.log(res)
         return res;
     }
