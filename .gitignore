@@ -18,3 +18,5 @@ yarn-error.log
 tools/*.key
 .DS_Store
 docker/mariadb/data/
+src/node_modules
+src/.php-cs-fixer.cache
