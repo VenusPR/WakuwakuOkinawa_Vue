@@ -99,6 +99,7 @@
 import { userUserStore } from "@/store/user";
 import { storage } from "@/utils/storage";
 
+import ApiClient from "@/api/api-client";
 import "@/assets/sass/scrollspyNav.scss";
 import "@/assets/sass/users/user-profile.scss";
 import { useMeta } from "@/composables/use-meta";
@@ -150,14 +151,30 @@ export default {
                 return;
             }
 
-            if (this.rememberLoggedIn) {
-                storage.setUserAccessToken(
-                    userStore.userCredential.accessToken
-                );
+            // verify
+            var res = await ApiClient.authVerify(
+                userStore.userCredential.accessToken
+            );
+            if (res.isError) {
+                console.error(res.data);
+                this.errorMessage = "ログインに失敗しました。";
+                return;
             }
+
+            var userToken = res.data["userToken"];
+            console.log("debug userToken", userToken);
+
+            storage.setUserToken(userToken, this.rememberLoggedIn);
             storage.setRememberLoggedIn(this.rememberLoggedIn);
 
-            console.log("userStore.user", userStore.user);
+            // TODO: テストコード
+            res = await ApiClient.getAuthUser();
+            if (res.isError) {
+                console.error(res.data);
+                this.errorMessage = "ユーザの取得に失敗しました。";
+                return;
+            }
+            console.log("debug user", res.data);
 
             //TODO: 現在はログイン後、プロフィール画面へ遷移するようにしているが、後で変更
             this.$router.push({ path: "/profile" });
