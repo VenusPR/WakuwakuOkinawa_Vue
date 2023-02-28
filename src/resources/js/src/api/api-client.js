@@ -123,8 +123,8 @@ class ApiClient {
     // ----------------------------------------
     // auth
     // ----------------------------------------
-    static async authVerify(token) {
-        return await ApiClient.callPost('/auth/verify', { token: token }, { useAuth: false });
+    static async authLogin(token) {
+        return await ApiClient.callPost('/auth/login', { token: token }, { useAuth: false });
     }
 
     static async getAuthUser() {

@@ -151,8 +151,14 @@ export default {
                 return;
             }
 
-            // verify
-            var res = await ApiClient.authVerify(
+            // TODO: テスト用ログ
+            console.log(
+                "debug accessToken",
+                userStore.userCredential.accessToken
+            );
+
+            // login
+            var res = await ApiClient.authLogin(
                 userStore.userCredential.accessToken
             );
             if (res.isError) {
@@ -162,6 +168,7 @@ export default {
             }
 
             var userToken = res.data["userToken"];
+            // TODO: テスト用ログ
             console.log("debug userToken", userToken);
 
             storage.setUserToken(userToken, this.rememberLoggedIn);

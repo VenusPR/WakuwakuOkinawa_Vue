@@ -11,9 +11,22 @@ use App\Models\User;
 
 class AuthController extends Controller
 {
-    public function verify(Request $request)
+    public function login(Request $request)
     {
         $token = $request->token;
+
+        $debug_user_id = $request->debug_user_id;
+        if ($debug_user_id) {
+            // TODO: debug_user_id 本番では削除
+            $user = User::where('id', $debug_user_id)->first();
+            if (!$user) {
+                return response()->json([
+                    'message' => 'user not found'
+                ], 404);
+            }
+            $user_token = $user->createToken('auth_token')->plainTextToken;
+            return ['user' => $user, 'user_token' => $user_token];
+        }
 
         $auth = Firebase::project('app')->auth();
         try {
@@ -40,7 +53,7 @@ class AuthController extends Controller
             Log::warning('Failed to verify token. ' . $e->getMessage());
 
             // Note: 本当はFrontへ情報を返さないほうがセキュリティ上よいけれど、
-            // エラー情報が合ったほうがデバッグしやすいので、メッセージを追加
+            // エラー情報があったほうがデバッグしやすいので、今現在はメッセージを追加
             return response()->json([
                 'message' => "Failed to verify token.". $e->getMessage()
             ], 401);

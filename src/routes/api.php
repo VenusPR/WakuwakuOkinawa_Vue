@@ -26,7 +26,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::auto('/debug', DebugController::class); // デバッグ用
 
-Route::post('/auth/verify', [AuthController::class, 'verify']);
+Route::post('/auth/login', [AuthController::class, 'login']);
 Route::get('/auth/user', [AuthController::class, 'getUser'])->middleware('auth:sanctum');
 
 // Route::auto('/accounts', AccountController::class);
