@@ -8,12 +8,11 @@
                     <div class="panel">
                         <div class="panel-body">
                             <div class="d-flex justify-content-between">
-                                <h3 style="padding-bottom: 1rem">
-                                    お子様情報
-                                </h3>
-                                
+                                <h3 style="padding-bottom: 1rem">お子様情報</h3>
                             </div>
-                            <div>シッターサービスをご利用される方はこちらのお子様情報をご入力ください。</div>
+                            <div>
+                                シッターサービスをご利用される方はこちらのお子様情報をご入力ください。
+                            </div>
                             <div
                                 style="
                                     border: solid 0.5px gray;
@@ -29,9 +28,9 @@
                             <Form
                                 ref="form"
                                 v-slot="{ errors }"
-                                :validationSchema="schema"
+                                :validationSchema="schema_1"
                             >
-                                <div v-if="isInputMode">
+                                <div v-if="isInputMode_1">
                                     <div>
                                         <label
                                             for="email"
@@ -121,36 +120,42 @@
                                     </div>
                                     <div>
                                         <label for="sex" class="col-form-label"
-                                        >性別</label>
+                                            >性別</label
+                                        >
 
                                         <Field
-                                        v-slot="{ field }"
-                                        v-model="form[0].sex"
-                                        name="sex"
-                                        type="radio"
+                                            v-slot="{ field }"
+                                            v-model="form[0].sex"
+                                            name="sex"
+                                            type="radio"
                                         >
-                                        <div class="input-radio">
-                                            <div
-                                                v-for="option in sexTypeOptions"
-                                                style="display: inline"
-                                                :key="option.value"
-                                            >
-                                                <input
-                                                    type="radio"
-                                                    name="sex"
-                                                    v-bind="field"
-                                                    value="1"
-                                                    :id="option.key"
-                                                />
-                                                <label
-                                                    :for="option.key"
-                                                    class="col-form-label"
-                                                    >{{ option.name }}</label
+                                            <div class="input-radio">
+                                                <div
+                                                    v-for="option in sexTypeOptions"
+                                                    style="display: inline"
+                                                    :key="option.value"
                                                 >
+                                                    <input
+                                                        type="radio"
+                                                        name="sex"
+                                                        v-bind="field"
+                                                        value="1"
+                                                        :id="option.key"
+                                                    />
+                                                    <label
+                                                        :for="option.key"
+                                                        class="col-form-label"
+                                                        >{{
+                                                            option.name
+                                                        }}</label
+                                                    >
+                                                </div>
                                             </div>
-                                        </div>
                                         </Field>
-                                        <ErrorMessage name="sex" class="error" />
+                                        <ErrorMessage
+                                            name="sex"
+                                            class="error"
+                                        />
                                     </div>
                                     <div>
                                         <label
@@ -205,11 +210,12 @@
                                         />
                                     </div>
                                     <div style="margin-top: 2rem">
-                                    <h5>プロフィール写真</h5>
+                                        <h5>プロフィール写真</h5>
                                     </div>
                                     <div>
                                         <div style="margin-bottom: 1rem">
-                                            フォーマット： JPG / JPEG / GIF / PNG
+                                            フォーマット： JPG / JPEG / GIF /
+                                            PNG
                                         </div>
 
                                         <img
@@ -233,68 +239,70 @@
                                     </div>
                                 </div>
 
-                            <!-- 登録済みの口座表示 -->
-                            <div v-if="!isInputMode">
-                                <table class="basic-info">
-                                    <tr>
-                                        <th>お名前：</th>
-                                        <td>
-                                            {{ form[0].lastName }}
-                                            {{ form[0].firstName }}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>ふりがな：</th>
-                                        <td>
-                                            {{ form[0].lastKana }}
-                                            {{ form[0].firstKana }}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>生年月日：</th>
-                                        <td>
-                                            {{ form[0].birthday }}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>性別：</th>
-                                        <td style="white-space: pre-line">
-                                            {{ form[0].sex }}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>アレルギー：</th>
-                                        <td style="white-space: pre-line">
-                                            {{ form[0].allergy }}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>その他特記事項：</th>
-                                        <td style="white-space: pre-line">
-                                            {{ form[0].otherNotes }}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>お写真：</th>
-                                        <td style="white-space: pre-line">
-                                            <img
-                                                v-if="form[0].photoName"
-                                                :src="form[0].photoName"
-                                                class="kid-photo"
-                                            />
-                                            <div
-                                                v-else
-                                                class="kid-photo"
-                                                style="background-color: gray"
-                                            ></div>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </div>
+                                <!-- お子様情報一人目 -->
+                                <div v-if="!isInputMode_1">
+                                    <table class="basic-info">
+                                        <tr>
+                                            <th>お名前：</th>
+                                            <td>
+                                                {{ form[0].lastName }}
+                                                {{ form[0].firstName }}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>ふりがな：</th>
+                                            <td>
+                                                {{ form[0].lastKana }}
+                                                {{ form[0].firstKana }}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>生年月日：</th>
+                                            <td>
+                                                {{ form[0].birthday }}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>性別：</th>
+                                            <td style="white-space: pre-line">
+                                                {{ form[0].sex }}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>アレルギー：</th>
+                                            <td style="white-space: pre-line">
+                                                {{ form[0].allergy }}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>その他特記事項：</th>
+                                            <td style="white-space: pre-line">
+                                                {{ form[0].otherNotes }}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>お写真：</th>
+                                            <td style="white-space: pre-line">
+                                                <img
+                                                    v-if="form[0].photoName"
+                                                    :src="form[0].photoName"
+                                                    class="kid-photo"
+                                                />
+                                                <div
+                                                    v-else
+                                                    class="kid-photo"
+                                                    style="
+                                                        background-color: gray;
+                                                    "
+                                                ></div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
 
                                 <div
                                     style="
-                                         border: solid 0.5px gray;
+                                        border: solid 0.5px gray;
                                         margin-top: 1rem;
                                         margin-bottom: 1rem;
                                     "
@@ -302,7 +310,7 @@
 
                                 <div
                                     v-if="
-                                        isInputMode &&
+                                        isInputMode_1 &&
                                         Object.keys(errors).length > 0
                                     "
                                     class="error"
@@ -319,7 +327,7 @@
                                 </div>
                                 <div>
                                     <button
-                                        v-if="isInputMode && !kidsData"
+                                        v-if="isInputMode_1 && !kidsData"
                                         type="button"
                                         class="btn btn-primary"
                                         :disabled="isSubmitting"
@@ -328,16 +336,16 @@
                                         登録
                                     </button>
                                     <button
-                                        v-if="!isInputMode && kidsData"
+                                        v-if="!isInputMode_1 && kidsData"
                                         type="button"
                                         class="btn btn-primary"
                                         :disabled="isSubmitting"
-                                        @click="() => (isInputMode = true)"
+                                        @click="() => (isInputMode_1 = true)"
                                     >
                                         編集
                                     </button>
 
-                                    <template v-if="isInputMode && kidsData">
+                                    <template v-if="isInputMode_1 && kidsData">
                                         <button
                                             type="button"
                                             class="btn btn-primary"
@@ -375,7 +383,7 @@ import { Validation } from "@/utils/validation";
 import { ErrorMessage, Field, Form } from "vee-validate";
 import * as yup from "yup";
 
-const schema = yup.object({
+const schema_1 = yup.object({
     lastName: Validation.Required,
     firstName: Validation.Required,
     lastKana: Validation.Required,
@@ -385,7 +393,26 @@ const schema = yup.object({
     // allergy: Validation.Required,
     // otherNotes: Validation.Required,
 });
-
+const schema_2 = yup.object({
+    lastName: Validation.Required,
+    firstName: Validation.Required,
+    lastKana: Validation.Required,
+    firstKana: Validation.Required,
+    sex: Validation.Required,
+    birthday: Validation.Required,
+    // allergy: Validation.Required,
+    // otherNotes: Validation.Required,
+});
+const schema_3 = yup.object({
+    lastName: Validation.Required,
+    firstName: Validation.Required,
+    lastKana: Validation.Required,
+    firstKana: Validation.Required,
+    sex: Validation.Required,
+    birthday: Validation.Required,
+    // allergy: Validation.Required,
+    // otherNotes: Validation.Required,
+});
 useMeta({ title: "お子様情報" });
 </script>
 
@@ -397,42 +424,43 @@ export default {
             isSubmitting: false,
             errorMessage: "",
             kidsData: null,
-            isInputMode: true,
+            isInputMode_1: true,
+
             form: [
-                    {
-                        id: "",
-                        lastName: "",
-                        firstName: "",
-                        lastKana: "",
-                        firstKana: "",
-                        birthday: "",
-                        sex: "",
-                        allergy: "",
-                        otherNotes: "",
-                    },
-                    {
-                        id: "",
-                        lastName: "",
-                        firstName: "",
-                        lastKana: "",
-                        firstKana: "",
-                        birthday: "",
-                        sex: "",
-                        allergy: "",
-                        otherNotes: "",
-                    },
-                    {
-                        id: "",
-                        lastName: "",
-                        firstName: "",
-                        lastKana: "",
-                        firstKana: "",
-                        birthday: "",
-                        sex: "",
-                        allergy: "",
-                        otherNotes: "",
-                    }
-                ],
+                {
+                    id: "",
+                    lastName: "",
+                    firstName: "",
+                    lastKana: "",
+                    firstKana: "",
+                    birthday: "",
+                    sex: "",
+                    allergy: "",
+                    otherNotes: "",
+                },
+                {
+                    id: "",
+                    lastName: "",
+                    firstName: "",
+                    lastKana: "",
+                    firstKana: "",
+                    birthday: "",
+                    sex: "",
+                    allergy: "",
+                    otherNotes: "",
+                },
+                {
+                    id: "",
+                    lastName: "",
+                    firstName: "",
+                    lastKana: "",
+                    firstKana: "",
+                    birthday: "",
+                    sex: "",
+                    allergy: "",
+                    otherNotes: "",
+                },
+            ],
             kidPhotoFile: null,
             profileAddress: "",
             sexTypeOptions: [
@@ -445,7 +473,7 @@ export default {
     async mounted() {
         await this.fetchKids();
         if (this.kidsData) {
-            this.isInputMode = false;
+            this.isInputMode_1 = false;
         }
         this.isLoaded = true;
     },
@@ -457,7 +485,7 @@ export default {
                 return;
             }
 
-         var kids = res.data;
+            var kids = res.data;
             if (kids) {
                 this.form = kids;
                 this.kidsData = kids;
@@ -465,15 +493,42 @@ export default {
                 this.kidsData = null;
             }
         },
+        async addKid() {
+            const { valid } = await this.$refs.form.validate();
+            if (!valid) return;
+            try {
+                this.isSubmitting = true;
+                var res = await ApiClient.addKid({
+                    last_name: this.form.lastName,
+                    first_name: this.form.firstName,
+                    last_kana: this.form.lastKana,
+                    first_kana: this.form.firstKana,
+                    birthday: this.form.birthday,
+                    sex: this.form.sex,
+                    allergy: this.form.allergy,
+                    other_notes: this.form.otherNotes,
+                });
+                if (res.isError) {
+                    this.errorMessage = CommonMessage.Error;
+                    return;
+                }
+                await this.fetchKids();
+            } finally {
+                this.isInputMode_1 = false;
+                this.isSubmitting = false;
+            }
+        },
         async updateKid() {
-            
             this.errorMessage = "";
             try {
                 const { valid } = await this.$refs.form.validate();
                 if (!valid) return;
 
                 this.isSubmitting = true;
-                var res = await ApiClient.updateKid(this.form.id, this.form);
+                var res = await ApiClient.updateKid(
+                    this.form[0].id,
+                    this.form[0]
+                );
                 if (res.isError) {
                     this.errorMessage = CommonMessage.Error;
                     // TODO: 後でトーストへ変更
@@ -481,12 +536,10 @@ export default {
                     return;
                 }
 
-                
-
                 // プロフィール画像の更新
                 if (this.KidPhotoFile) {
                     var res = await ApiClient.updateKidPhoto(
-                        this.form[kids_number].id,
+                        this.form[0].id,
                         this.KidPhotoFile
                     );
                     if (res.isError) {
@@ -497,11 +550,47 @@ export default {
                     this.$refs.KidPhotoFile.value = "";
                     this.KidPhotoFile = null;
                 }
-                
 
                 await this.fetchKids();
             } finally {
-                this.isInputMode = false;
+                this.isInputMode_1 = false;
+                this.isSubmitting = false;
+            }
+        },
+        async multiUpdateKids() {
+            this.errorMessage = "";
+            try {
+                const { valid } = await this.$refs.form.validate();
+                if (!valid) return;
+                // console.log("ここ");
+
+                this.isSubmitting = true;
+                var res = await ApiClient.multiUpdateKids(this.form);
+                if (res.isError) {
+                    this.errorMessage = CommonMessage.Error;
+                    // TODO: 後でトーストへ変更
+                    errorMessage = CommonMessage.FailedTo("お子様用情報の更新");
+                    return;
+                }
+
+                // プロフィール画像の更新
+                // if (this.KidPhotoFile) {
+                //     var res = await ApiClient.updateKidPhoto(
+                //         this.form.id,
+                //         this.KidPhotoFile
+                //     );
+                //     if (res.isError) {
+                //         errorMessage =
+                //             CommonMessage.FailedTo("お子様用写真の更新");
+                //         return;
+                //     }
+                //     this.$refs.KidPhotoFile.value = "";
+                //     this.KidPhotoFile = null;
+                // }
+
+                await this.fetchKids();
+            } finally {
+                this.isInputMode_1 = false;
                 this.isSubmitting = false;
             }
         },

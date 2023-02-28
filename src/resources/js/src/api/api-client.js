@@ -155,6 +155,11 @@ class ApiClient {
     static async updateKid(id, data) {
         return await ApiClient.callPut('/profiles/me/kids/' + id, data);
     }
+    static async multiUpdateKids(data) {
+        // console.log(data);
+        const headers = { 'Content-Type': 'application/json' };
+        return await ApiClient.callPut('/profiles/me/kids/multiupdate', data,headers);
+    }
 
     static async deleteKid(id) {
         return await ApiClient.callDelete('/profiles/me/kids/' + id);
