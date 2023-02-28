@@ -1,3 +1,4 @@
+import { storage } from '@/utils/storage';
 import axios from 'axios';
 import camelcaseKeys from "camelcase-keys";
 import snakecaseKeys from "snakecase-keys";
@@ -11,15 +12,25 @@ class ApiException extends Error {
 }
 
 class ApiClient {
-    static baseUrl = 'http://localhost/api' // TODO: 後で変更
+    static baseUrl = 'http://localhost/api'; // TODO: 後で変更
 
-    static async callPost(path, data, config = null, option = {}) {
-        option = { ...{ useConvertRequest: true, useConvertResponse: true }, ...option }
+    static async setAuthorizationHeader(config) {
+        var token = storage.getUserToken();
+        config.headers['Authorization'] = 'Bearer ' + token;
+    }
 
-        const headers = { 'Content-Type': 'multipart/form-data' };
+    static defaultOption = { useConvertRequest: true, useConvertResponse: true, useAuth: true };
+
+    static async callPost(path, data, config = {}, option = {}) {
+        option = { ...ApiClient.defaultOption, ...option }
+
+        config = { ...{ headers: {} }, ...config }
+        if (option.useAuth) {
+            ApiClient.setAuthorizationHeader(config);
+        }
 
         var reqData = option.useConvertRequest ? ApiClient.toRequestData(data) : data
-        var res = await axios.post(ApiClient.baseUrl + path, reqData, { headers });
+        var res = await axios.post(ApiClient.baseUrl + path, reqData, config);
         if (option.useConvertResponse) {
             return ApiClient.getApiResult(res)
         }
@@ -27,9 +38,12 @@ class ApiClient {
     }
 
     static async callGet(path, data, config = {}, option = {}) {
-        option = { ...{ useConvertRequest: true, useConvertResponse: true }, ...option }
+        option = { ...ApiClient.defaultOption, ...option }
 
-        config = { ...config, ...{ data: reqData } }
+        config = { ...{ headers: {} }, ...config }
+        if (option.useAuth) {
+            ApiClient.setAuthorizationHeader(config);
+        }
 
         var reqData = option.useConvertRequest ? ApiClient.toRequestData(data) : data
         var res = await axios.get(ApiClient.baseUrl + path, config);
@@ -40,7 +54,12 @@ class ApiClient {
     }
 
     static async callPut(path, data, config = {}, option = {}) {
-        option = { ...{ useConvertRequest: true, useConvertResponse: true }, ...option }
+        option = { ...ApiClient.defaultOption, ...option }
+
+        config = { ...{ headers: {} }, ...config }
+        if (option.useAuth) {
+            ApiClient.setAuthorizationHeader(config);
+        }
 
         var reqData = option.useConvertRequest ? ApiClient.toRequestData(data) : data
         var res = await axios.put(ApiClient.baseUrl + path, reqData, config);
@@ -51,7 +70,12 @@ class ApiClient {
     }
 
     static async callDelete(path, config = {}, option = {}) {
-        option = { ...{ useConvertResponse: true }, ...option }
+        option = { ...ApiClient.defaultOption, ...option }
+
+        config = { ...{ headers: {} }, ...config }
+        if (option.useAuth) {
+            ApiClient.setAuthorizationHeader(config);
+        }
 
         var res = await axios.delete(ApiClient.baseUrl + path, config);
         if (option.useConvertResponse) {
@@ -60,12 +84,16 @@ class ApiClient {
         return res
     }
 
-    static async callPostFormData(path, data, config = null, option = {}) {
-        option = { ...{ useConvertRequest: true, useConvertResponse: true }, ...option }
+    static async callPostFormData(path, data, config = {}, option = {}) {
+        option = { ...ApiClient.defaultOption, ...option }
 
         config = config ? config : {}
         var headers = config.headers ? config.headers : {}
         headers = { ...headers, ...{ 'Content-Type': 'multipart/form-data' } }
+
+        if (option.useAuth) {
+            ApiClient.setAuthorizationHeader(headers);
+        }
 
         config = { ...config, headers: headers }
         return await ApiClient.callPost(path, data, config, { useConvertRequest: false })
@@ -91,6 +119,17 @@ class ApiClient {
     // ----------------------------------------
     // 以下、APIの呼び出し
     // ----------------------------------------
+
+    // ----------------------------------------
+    // auth
+    // ----------------------------------------
+    static async authLogin(token) {
+        return await ApiClient.callPost('/auth/login', { token: token }, { useAuth: false });
+    }
+
+    static async getAuthUser() {
+        return await ApiClient.callGet('/auth/user');
+    }
 
     // ----------------------------------------
     // bank

@@ -24,8 +24,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::auto('/auth', AuthController::class);   // TODO: テスト用。後で変更
 Route::auto('/debug', DebugController::class); // デバッグ用
+
+Route::post('/auth/login', [AuthController::class, 'login']);
+Route::get('/auth/user', [AuthController::class, 'getUser'])->middleware('auth:sanctum');
 
 // Route::auto('/accounts', AccountController::class);
 Route::apiResource('/banks', BanksController::class);
