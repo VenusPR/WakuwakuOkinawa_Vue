@@ -426,41 +426,43 @@ export default {
             kidsData: null,
             isInputMode_1: true,
 
-            form: [
-                {
-                    id: "",
-                    lastName: "",
-                    firstName: "",
-                    lastKana: "",
-                    firstKana: "",
-                    birthday: "",
-                    sex: "",
-                    allergy: "",
-                    otherNotes: "",
-                },
-                {
-                    id: "",
-                    lastName: "",
-                    firstName: "",
-                    lastKana: "",
-                    firstKana: "",
-                    birthday: "",
-                    sex: "",
-                    allergy: "",
-                    otherNotes: "",
-                },
-                {
-                    id: "",
-                    lastName: "",
-                    firstName: "",
-                    lastKana: "",
-                    firstKana: "",
-                    birthday: "",
-                    sex: "",
-                    allergy: "",
-                    otherNotes: "",
-                },
-            ],
+            form: {
+                kids: [
+                    {
+                        id: "",
+                        lastName: "",
+                        firstName: "",
+                        lastKana: "",
+                        firstKana: "",
+                        birthday: "",
+                        sex: "",
+                        allergy: "",
+                        otherNotes: "",
+                    },
+                    {
+                        id: "",
+                        lastName: "",
+                        firstName: "",
+                        lastKana: "",
+                        firstKana: "",
+                        birthday: "",
+                        sex: "",
+                        allergy: "",
+                        otherNotes: "",
+                    },
+                    {
+                        id: "",
+                        lastName: "",
+                        firstName: "",
+                        lastKana: "",
+                        firstKana: "",
+                        birthday: "",
+                        sex: "",
+                        allergy: "",
+                        otherNotes: "",
+                    },
+                ],
+            },
             kidPhotoFile: null,
             profileAddress: "",
             sexTypeOptions: [
@@ -487,7 +489,7 @@ export default {
 
             var kids = res.data;
             if (kids) {
-                this.form = kids;
+                this.form.kids = kids;
                 this.kidsData = kids;
             } else {
                 this.kidsData = null;

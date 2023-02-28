@@ -125,7 +125,8 @@ class ProfilesKidsController extends Controller
      */
     public function multiUpdate(Request $request)
     {
-        $kidsData = json_decode($request->getContent(), true);
+        // $kidsData = json_decode($request->getContent(), true);
+        $kidsData = $request->kids;
         foreach ($kidsData['kids'] as $kidData) {
             $kid = UserKid::where('id', $kidData['id'])->first();
             if (!$kid) {
