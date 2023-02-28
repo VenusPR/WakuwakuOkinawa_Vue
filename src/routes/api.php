@@ -33,4 +33,5 @@ Route::post('/profiles/me/photo', [ProfilesController::class, 'updatePhoto']);
 Route::apiResource('/profiles', ProfilesController::class);
 Route::apiResource('/prefectures', PrefecturesController::class);
 Route::post('/profiles/me/kids/{id}/photo', [ProfilesKidsController::class, 'updatePhoto']);
+Route::put('/profiles/me/kids/multiupdate', [ProfilesKidsController::class, 'multiUpdate']);
 Route::apiResource('/profiles/me/kids', ProfilesKidsController::class);

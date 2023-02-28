@@ -117,6 +117,53 @@ class ProfilesKidsController extends Controller
     }
 
     /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function multiUpdate(Request $request)
+    {
+        $kidsData = json_decode($request->getContent(), true);
+        foreach ($kidsData['kids'] as $kidData) {
+            $kid = UserKid::where('id', $kidData['id'])->first();
+            if (!$kid) {
+                    return response()->json([
+                        'message' => 'kid not found'
+                    ], 404);
+                }
+            if (!empty($request->last_name)) {
+            $kid->last_name = $request->last_name;
+            }
+            if (!empty($request->first_name)) {
+                $kid->first_name = $request->first_name;
+            }
+            if (!empty($request->last_kana)) {
+                $kid->last_kana = $request->last_kana;
+            }
+            if (!empty($request->first_kana)) {
+                $kid->first_kana = $request->first_kana;
+            }
+            if (!empty($request->birthday)) {
+                $kid->birthday = $request->birthday;
+            }
+            if (!empty($request->sex)) {
+                $kid->sex = $request->sex;
+            }
+            if (!empty($request->allergy)) {
+                $kid->allergy = $request->allergy;
+            }
+            if (!empty($request->other_notes)) {
+                $kid->other_notes = $request->other_notes;
+            }
+            $kid->save();
+        }        
+
+        return ['message' => 'updated kid info'];
+    }
+
+    /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
