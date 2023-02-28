@@ -94,6 +94,8 @@ export default new createStore({
             return state.layout;
         },
     },
-    actions: {},
+    actions: {
+    },
     modules: {},
 });
+
