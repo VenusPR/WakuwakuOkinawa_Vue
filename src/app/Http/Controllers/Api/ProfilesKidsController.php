@@ -133,36 +133,36 @@ class ProfilesKidsController extends Controller
     {
         // $kidsData = json_decode($request->getContent(), true);
         $kidsData = $request->kids;
-        foreach ($kidsData['kids'] as $kidData) {
+        foreach ($kidsData as $kidData) {
             $kid = UserKid::where('id', $kidData['id'])->first();
             if (!$kid) {
                     return response()->json([
                         'message' => 'kid not found'
                     ], 404);
             }
-            if (!empty($request->last_name)) {
-                $kid->last_name = $request->last_name;
+            if (!empty($kidData['last_name'])) {
+                $kid->last_name = $kidData['last_name'];
             }
-            if (!empty($request->first_name)) {
-                $kid->first_name = $request->first_name;
+            if (!empty($kidData['first_name'])) {
+                $kid->first_name = $kidData['first_name'];
             }
-            if (!empty($request->last_kana)) {
-                $kid->last_kana = $request->last_kana;
+            if (!empty($kidData['last_kana'])) {
+                $kid->last_kana = $kidData['last_kana'];
             }
-            if (!empty($request->first_kana)) {
-                $kid->first_kana = $request->first_kana;
+            if (!empty($kidData['first_kana'])) {
+                $kid->first_kana = $kidData['first_kana'];
             }
-            if (!empty($request->birthday)) {
-                $kid->birthday = $request->birthday;
+            if (!empty($kidData['birthday'])) {
+                $kid->birthday = $kidData['birthday'];
             }
-            if (!empty($request->sex)) {
-                $kid->sex = $request->sex;
+            if (!empty($kidData['sex'])) {
+                $kid->sex = $kidData['sex'];
             }
-            if (!empty($request->allergy)) {
-                $kid->allergy = $request->allergy;
+            if (!empty($kidData['allergy'])) {
+                $kid->allergy = $kidData['allergy'];
             }
-            if (!empty($request->other_notes)) {
-                $kid->other_notes = $request->other_notes;
+            if (!empty($kidData['other_notes'])) {
+                $kid->other_notes = $kidData['other_notes'];
             }
             $kid->save();
         }
