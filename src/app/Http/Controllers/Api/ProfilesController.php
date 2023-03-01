@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 
@@ -18,7 +17,6 @@ class ProfilesController extends Controller
     public function index()
     {
         //
-
     }
 
     /**
@@ -38,7 +36,7 @@ class ProfilesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(String $me)
+    public function show(string $me)
     {
         $user_id = 1;
         if ($me != 'me') {
@@ -76,7 +74,7 @@ class ProfilesController extends Controller
      * emergency_contact_relation
      * emergency_contact_tel
      */
-    public function update(Request $request, String $me)
+    public function update(Request $request, string $me)
     {
         $user_id = 1;
         if ($me != 'me') {
