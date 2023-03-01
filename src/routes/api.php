@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\BanksController;
 use App\Http\Controllers\Api\PrefecturesController;
 use App\Http\Controllers\Api\ProfilesController;
 use App\Http\Controllers\Api\ProfilesKidsController;
+use App\Http\Controllers\Api\ProfilesSeniorsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +35,11 @@ Route::apiResource('/banks', BanksController::class);
 Route::post('/profiles/me/photo', [ProfilesController::class, 'updatePhoto']);
 Route::apiResource('/profiles', ProfilesController::class);
 Route::apiResource('/prefectures', PrefecturesController::class);
+
 Route::post('/profiles/me/kids/{id}/photo', [ProfilesKidsController::class, 'updatePhoto']);
 Route::put('/profiles/me/kids/multiupdate', [ProfilesKidsController::class, 'multiUpdate']);
 Route::apiResource('/profiles/me/kids', ProfilesKidsController::class);
+
+Route::post('/profiles/me/seniors/{id}/photo', [ProfilesSeniorsController::class, 'updatePhoto']);
+Route::put('/profiles/me/seniors/multiupdate', [ProfilesSeniorsController::class, 'multiUpdate']);
+Route::apiResource('/profiles/me/seniors', ProfilesSeniorsController::class);

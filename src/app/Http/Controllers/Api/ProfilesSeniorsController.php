@@ -4,11 +4,11 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\UserKid;
+use App\Models\UserSenior;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 
-class ProfilesKidsController extends Controller
+class ProfilesSeniorsController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -19,8 +19,8 @@ class ProfilesKidsController extends Controller
     {
         //
         $user_id = 1;
-        $kids = UserKid::where('user_id', $user_id)->get();
-        return ["kids" => $kids];
+        $seniors = UserSenior::where('user_id', $user_id)->get();
+        return ["seniors" => $seniors];
     }
 
     /**
@@ -33,24 +33,26 @@ class ProfilesKidsController extends Controller
     {
         $user_id = 1;
 
-        if (UserKid::where('user_id', $user_id)->count() > 2) {
+        if (UserSenior::where('user_id', $user_id)->count() > 1) {
             return response()->json([
-                'message' => 'すでに３人登録されています'
+                'message' => 'すでに２人登録されています'
             ], 400);
         }
-        $kid = new UserKid();
-        $kid->user_id = $user_id;
-        $kid->last_name = $request->last_name;
-        $kid->first_name = $request->first_name;
-        $kid->last_kana = $request->last_kana;
-        $kid->first_kana = $request->first_kana;
-        $kid->birthday = $request->birthday;
-        $kid->sex = $request->sex;
-        $kid->allergy = $request->allergy;
-        $kid->other_notes = $request->other_notes;
-        $kid->save();
 
-        return ['message' => 'created kid'];
+        $seniors = new UserSenior();
+        $seniors->user_id = $user_id;
+        $seniors->last_name = $request->last_name;
+        $seniors->first_name = $request->first_name;
+        $seniors->last_kana = $request->last_kana;
+        $seniors->first_kana = $request->first_kana;
+        $seniors->birthday = $request->birthday;
+        $seniors->sex = $request->sex;
+        $seniors->allergy = $request->allergy;
+        $seniors->other_notes = $request->other_notes;
+        $seniors->tel = $request->tel;
+        $seniors->save();
+
+        return ['message' => 'created senior'];
     }
 
     /**
@@ -61,13 +63,13 @@ class ProfilesKidsController extends Controller
      */
     public function show($id)
     {
-        $kid = UserKid::where('id', $id)->first();
-        if (!$kid) {
+        $senior = UserSenior::where('id', $id)->first();
+        if (!$senior) {
             return response()->json([
-                'message' => 'kid not found'
+                'message' => 'senior not found'
             ], 404);
         }
-        return $kid;
+        return $senior;
     }
 
     /**
@@ -84,42 +86,46 @@ class ProfilesKidsController extends Controller
      * sex
      * allergy
      * other_notes
+     * tel
      */
-    public function update(Request $request, int $id)
+    public function update(Request $request, $id)
     {
-        $kid = UserKid::where('id', $id)->first();
-        if (!$kid) {
+        $senior = UserSenior::where('id', $id)->first();
+        if (!$senior) {
             return response()->json([
-                'message' => 'kid not found'
+                'message' => 'senior not found'
             ], 404);
         }
         if (!empty($request->last_name)) {
-            $kid->last_name = $request->last_name;
+            $senior->last_name = $request->last_name;
         }
         if (!empty($request->first_name)) {
-            $kid->first_name = $request->first_name;
+            $senior->first_name = $request->first_name;
         }
         if (!empty($request->last_kana)) {
-            $kid->last_kana = $request->last_kana;
+            $senior->last_kana = $request->last_kana;
         }
         if (!empty($request->first_kana)) {
-            $kid->first_kana = $request->first_kana;
+            $senior->first_kana = $request->first_kana;
         }
         if (!empty($request->birthday)) {
-            $kid->birthday = $request->birthday;
+            $senior->birthday = $request->birthday;
         }
         if (!empty($request->sex)) {
-            $kid->sex = $request->sex;
+            $senior->sex = $request->sex;
         }
         if (!empty($request->allergy)) {
-            $kid->allergy = $request->allergy;
+            $senior->allergy = $request->allergy;
         }
         if (!empty($request->other_notes)) {
-            $kid->other_notes = $request->other_notes;
+            $senior->other_notes = $request->other_notes;
         }
-        $kid->save();
+        if (!empty($request->tel)) {
+            $senior->tel = $request->tel;
+        }
+        $senior->save();
 
-        return ['message' => 'updated kid info'];
+        return ['message' => 'updated senior info'];
     }
 
     /**
@@ -131,43 +137,47 @@ class ProfilesKidsController extends Controller
      */
     public function multiUpdate(Request $request)
     {
-        // $kidsData = json_decode($request->getContent(), true);
-        $kidsData = $request->kids;
-        foreach ($kidsData['kids'] as $kidData) {
-            $kid = UserKid::where('id', $kidData['id'])->first();
-            if (!$kid) {
+        // $seniorsData = json_decode($request->getContent(), true);
+        $seniorsData = $request->seniors;
+        foreach ($seniorsData as $seniorData) {
+            $senior = UserSenior::where('id', $seniorData['id'])->first();
+            // dd($seniorData);
+            if (!$senior) {
                     return response()->json([
-                        'message' => 'kid not found'
+                        'message' => 'Senior not found'
                     ], 404);
             }
-            if (!empty($request->last_name)) {
-                $kid->last_name = $request->last_name;
+            if (!empty($seniorData['last_name'])) {
+                $senior->last_name = $seniorData['last_name'];
             }
-            if (!empty($request->first_name)) {
-                $kid->first_name = $request->first_name;
+            if (!empty($seniorData['first_name'])) {
+                $senior->first_name = $seniorData['first_name'];
             }
-            if (!empty($request->last_kana)) {
-                $kid->last_kana = $request->last_kana;
+            if (!empty($seniorData['last_kana'])) {
+                $senior->last_kana = $seniorData['last_kana'];
             }
-            if (!empty($request->first_kana)) {
-                $kid->first_kana = $request->first_kana;
+            if (!empty($seniorData['first_kana'])) {
+                $senior->first_kana = $seniorData['first_kana'];
             }
-            if (!empty($request->birthday)) {
-                $kid->birthday = $request->birthday;
+            if (!empty($seniorData['birthday'])) {
+                $senior->birthday = $seniorData['birthday'];
             }
-            if (!empty($request->sex)) {
-                $kid->sex = $request->sex;
+            if (!empty($seniorData['sex'])) {
+                $senior->sex = $seniorData['sex'];
             }
-            if (!empty($request->allergy)) {
-                $kid->allergy = $request->allergy;
+            if (!empty($seniorData['allergy'])) {
+                $senior->allergy = $seniorData['allergy'];
             }
-            if (!empty($request->other_notes)) {
-                $kid->other_notes = $request->other_notes;
+            if (!empty($seniorData['other_notes'])) {
+                $senior->other_notes = $seniorData['other_notes'];
             }
-            $kid->save();
+            if (!empty($seniorData['tel'])) {
+                $senior->tel = $seniorData['tel'];
+            }
+            $senior->save();
         }
 
-        return ['message' => 'updated kid info'];
+        return ['message' => 'updated senior info'];
     }
 
     /**
@@ -178,15 +188,15 @@ class ProfilesKidsController extends Controller
      */
     public function destroy($id)
     {
-        $kid = UserKid::where('id', $id)->first();
-        if (!$kid) {
+        $senior = UserSenior::where('id', $id)->first();
+        if (!$senior) {
             return response()->json([
-                'message' => 'kid not found'
+                'message' => 'senior not found'
             ], 404);
         }
-        $kid->delete();
+        $senior->delete();
 
-        return ['message' => 'delete kid'];
+        return ['message' => 'delete senior'];
     }
 
     /**
@@ -225,20 +235,20 @@ class ProfilesKidsController extends Controller
                 'message' => '画像が選択されていません'
             ], 400);
         }
-        $path = $request->file->store('public/profile/kids_photo');
+        $path = $request->file->store('public/profile/seniors_photo');
         // $user = Auth::user();
-        $kid = UserKid::where('id', $id)->first();
-        $file_name = '/storage/profile/kids_photo/' . basename($path);
+        $senior = UserSenior::where('id', $id)->first();
+        $file_name = '/storage/profile/seniors_photo/' . basename($path);
         //ファイルがある場合
-        if ($kid->photo_name) {
+        if ($senior->photo_name) {
             //ファイルの削除
-            Storage::disk('public')->delete($kid->photo_name);
+            Storage::disk('public')->delete($senior->photo_name);
         }
 
         // $user->photo = $file_path;
-        $kid->photo_name = $file_name;
+        $senior->photo_name = $file_name;
 
-        $kid->save();
+        $senior->save();
 
         return [
             'message' => 'Image uploaded successfully',
