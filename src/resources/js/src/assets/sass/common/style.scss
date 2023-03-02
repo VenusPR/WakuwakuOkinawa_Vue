@@ -4,13 +4,21 @@
 }
 
 .error {
-    color: red; // TODO: 後で共通化
+    color: red;
     white-space: pre-line;
     width: fit-content;
 }
 
 .text-link {
-    color: #0d95f6; // TODO: 後で共通化
+    color: #0d95f6;
+    text-decoration: none;
+    &:hover {
+        color: #0d95f6;
+    }
+    &.disabled {
+        color: #888ea8;
+        pointer-events: none;
+    }
 }
 
 .color-gray {
@@ -23,3 +31,31 @@
     margin-bottom: 1rem;
 }
 
+.btn {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+}
+
+.icon {
+    vertical-align: middle;
+
+    &.icon-16 {
+        width: 16px;
+        height: 16px;
+    }
+}
+
+div, span, h1, h2, h3, h4, h5, h6, p, a, ul, li, ol, table, tr, td, th, input, textarea, select, button {
+    vertical-align: middle;
+}
+
+.input-radio {
+    input[type="radio"] {
+        margin-right: 0.5rem;
+        margin-left: 0.5rem;
+    }
+    label {
+        margin: 0;
+        padding: 0;
+    }
+}

@@ -10,7 +10,7 @@ const routes = [
     { path: '/login', name: 'Login', component: () => import('../views/login.vue'), },
     { path: '/profile', name: 'Profile', component: () => import('../views/profile/index.vue'), },
     { path: '/profile/bank', name: 'ProfileBank', component: () => import('../views/profile/bank.vue'), },
-    { path: '/profile/kids', name: 'ProfileKid', component: () => import('../views/profile/kids.vue'), },
+    { path: '/profile/kids', name: 'ProfileKids', component: () => import('../views/profile/kids.vue'), },
 
     // ------- 以下は sample --------------------------------
 

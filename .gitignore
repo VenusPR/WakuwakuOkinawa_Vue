@@ -22,3 +22,4 @@ src/node_modules
 src/.php-cs-fixer.cache
 src/.env.testing
 src/credentials/firebase_credential.json
+node_modules/

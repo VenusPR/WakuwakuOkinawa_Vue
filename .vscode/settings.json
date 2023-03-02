@@ -1,26 +1,23 @@
 {
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true,
-    "source.organizeImports": true
-  },
-
+  
   "[vue]": {
     "editor.formatOnSave": true
   },
 
   "phpcs.executablePath": "./src/vendor/bin/phpcs",
-  "phpSniffer.executablesFolder" : "./src/vendor/bin/",
-  
+  "phpSniffer.executablesFolder": "./src/vendor/bin/",
+
   "[php]": {
     // "editor.defaultFormatter": "bmewburn.vscode-intelephense-client",
     "editor.defaultFormatter": "wongjn.php-sniffer",
     "editor.formatOnSave": true
   },
 
-  "eslint.validate": [
-    "javascript",
-    "typescript",
-    "vue"
-  ],
+  "eslint.validate": ["javascript", "typescript", "vue"],
+
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true,
+    "source.organizeImports": true
+  },
 }

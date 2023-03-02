@@ -25,7 +25,6 @@
                                 />
                                 <ErrorMessage name="email" class="error" />
                             </div>
-
                             <div>
                                 <label for="password" class="col-form-label"
                                     >パスワード</label
