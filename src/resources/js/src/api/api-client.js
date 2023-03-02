@@ -209,5 +209,31 @@ class ApiClient {
         formData.append('file', data)
         return await ApiClient.callPostFormData('/profiles/me/kids/' +id+'/photo/', formData);
     }
+    // ----------------------------------------
+    // seniors
+    // ----------------------------------------
+    static async getSeniors() {
+        var res = await ApiClient.callGet('/profiles/me/seniors');
+        res.data = res.data.seniors;
+        return res;
+    }
+    static async addSenior(data) {
+        return await ApiClient.callPost('/profiles/me/seniors', data);
+    }
+    static async updateSenior(id, data) {
+        return await ApiClient.callPut('/profiles/me/seniors/' + id, data);
+    }
+    static async multiUpdateSeniors(data) {
+        // console.log(data);
+        return await ApiClient.callPut('/profiles/me/seniors/multiupdate', data);
+    }
+    static async deleteSenior(id) {
+        return await ApiClient.callDelete('/profiles/me/seniors/' + id);
+    }
+    static async updateSeniorPhoto(id,data) {
+        let formData = new FormData()
+        formData.append('file', data)
+        return await ApiClient.callPostFormData('/profiles/me/seniors/' +id+'/photo/', formData);
+    }
 }
 export default ApiClient;
