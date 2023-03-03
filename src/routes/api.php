@@ -36,9 +36,9 @@ Route::post('/profiles/me/photo', [ProfilesController::class, 'updatePhoto']);
 Route::apiResource('/profiles', ProfilesController::class);
 Route::apiResource('/prefectures', PrefecturesController::class);
 
+Route::get('/profiles/me/kids', [ProfilesKidsController::class, 'index']);
+Route::post('/profiles/me/kids', [ProfilesKidsController::class, 'saveKids']);
 Route::post('/profiles/me/kids/{id}/photo', [ProfilesKidsController::class, 'updatePhoto']);
-Route::put('/profiles/me/kids/multiupdate', [ProfilesKidsController::class, 'multiUpdate']);
-Route::apiResource('/profiles/me/kids', ProfilesKidsController::class);
 
 Route::post('/profiles/me/seniors/{id}/photo', [ProfilesSeniorsController::class, 'updatePhoto']);
 Route::put('/profiles/me/seniors/multiupdate', [ProfilesSeniorsController::class, 'multiUpdate']);

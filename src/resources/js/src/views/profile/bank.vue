@@ -59,7 +59,6 @@
                                             type="text"
                                             class="form-control"
                                             placeholder=""
-                                            required="true"
                                         />
                                         <ErrorMessage
                                             name="branchName"
@@ -106,7 +105,6 @@
                                             type="text"
                                             class="form-control"
                                             placeholder=""
-                                            required="true"
                                         />
                                         <ErrorMessage
                                             name="accountNumber"
@@ -125,7 +123,6 @@
                                             type="text"
                                             class="form-control"
                                             placeholder=""
-                                            required="true"
                                         />
                                         <ErrorMessage
                                             name="accountName"
@@ -360,12 +357,4 @@ export default {
     },
 };
 </script>
-<style lang="scss" scoped>
-.btn {
-    margin-left: 0.5rem;
-    margin-right: 0.5rem;
-}
-.error {
-    color: red; // TODO: 後で共通化
-}
-</style>
+<style lang="scss" scoped></style>

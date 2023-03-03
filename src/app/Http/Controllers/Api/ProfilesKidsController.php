@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\UserKid;
-use App\Models\User;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class ProfilesKidsController extends Controller
 {
@@ -17,176 +17,61 @@ class ProfilesKidsController extends Controller
      */
     public function index()
     {
-        //
         $user_id = 1;
+
         $kids = UserKid::where('user_id', $user_id)->get();
         return ["kids" => $kids];
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Save kids in storage.
      *
      * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function saveKids(Request $request)
     {
         $user_id = 1;
 
-        if (UserKid::where('user_id', $user_id)->count() > 2) {
-            return response()->json([
-                'message' => 'すでに３人登録されています'
-            ], 400);
-        }
-        $kid = new UserKid();
-        $kid->user_id = $user_id;
-        $kid->last_name = $request->last_name;
-        $kid->first_name = $request->first_name;
-        $kid->last_kana = $request->last_kana;
-        $kid->first_kana = $request->first_kana;
-        $kid->birthday = $request->birthday;
-        $kid->sex = $request->sex;
-        $kid->allergy = $request->allergy;
-        $kid->other_notes = $request->other_notes;
-        $kid->save();
+        // この処理は、ユーザに紐づくすべてのkidsの作成、更新、削除を行います。
+        foreach ($request->kids as $kidData) {
+            $kid = null;
+            if ($kidData['id']) {
+                // 更新
+                $kid = UserKid::where([['id', $kidData['id']], ['user_id', $user_id]])->first();
+                if (!$kid) {
+                        return response()->json([
+                            'message' => 'kid not found'
+                        ], 404);
+                }
+                $this->setKidUpdateProps($kid, $kidData);
+            } else {
+                // 作成
+                $kid = new UserKid();
+                $kid->user_id = $user_id;
+                $this->setKidUpdateProps($kid, $kidData);
+            }
 
-        return ['message' => 'created kid'];
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        $kid = UserKid::where('id', $id)->first();
-        if (!$kid) {
-            return response()->json([
-                'message' => 'kid not found'
-            ], 404);
-        }
-        return $kid;
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     * last_name
-     * first_name
-     * last_kana
-     * first_kana
-     * birthday
-     * sex
-     * allergy
-     * other_notes
-     */
-    public function update(Request $request, int $id)
-    {
-        $kid = UserKid::where('id', $id)->first();
-        if (!$kid) {
-            return response()->json([
-                'message' => 'kid not found'
-            ], 404);
-        }
-        if (!empty($request->last_name)) {
-            $kid->last_name = $request->last_name;
-        }
-        if (!empty($request->first_name)) {
-            $kid->first_name = $request->first_name;
-        }
-        if (!empty($request->last_kana)) {
-            $kid->last_kana = $request->last_kana;
-        }
-        if (!empty($request->first_kana)) {
-            $kid->first_kana = $request->first_kana;
-        }
-        if (!empty($request->birthday)) {
-            $kid->birthday = $request->birthday;
-        }
-        if (!empty($request->sex)) {
-            $kid->sex = $request->sex;
-        }
-        if (!empty($request->allergy)) {
-            $kid->allergy = $request->allergy;
-        }
-        if (!empty($request->other_notes)) {
-            $kid->other_notes = $request->other_notes;
-        }
-        $kid->save();
-
-        return ['message' => 'updated kid info'];
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function multiUpdate(Request $request)
-    {
-        // $kidsData = json_decode($request->getContent(), true);
-        $kidsData = $request->kids;
-        foreach ($kidsData as $kidData) {
-            $kid = UserKid::where('id', $kidData['id'])->first();
-            if (!$kid) {
-                    return response()->json([
-                        'message' => 'kid not found'
-                    ], 404);
-            }
-            if (!empty($kidData['last_name'])) {
-                $kid->last_name = $kidData['last_name'];
-            }
-            if (!empty($kidData['first_name'])) {
-                $kid->first_name = $kidData['first_name'];
-            }
-            if (!empty($kidData['last_kana'])) {
-                $kid->last_kana = $kidData['last_kana'];
-            }
-            if (!empty($kidData['first_kana'])) {
-                $kid->first_kana = $kidData['first_kana'];
-            }
-            if (!empty($kidData['birthday'])) {
-                $kid->birthday = $kidData['birthday'];
-            }
-            if (!empty($kidData['sex'])) {
-                $kid->sex = $kidData['sex'];
-            }
-            if (!empty($kidData['allergy'])) {
-                $kid->allergy = $kidData['allergy'];
-            }
-            if (!empty($kidData['other_notes'])) {
-                $kid->other_notes = $kidData['other_notes'];
-            }
             $kid->save();
         }
 
-        return ['message' => 'updated kid info'];
-    }
+        // 削除
+        foreach ($request->delete_kid_ids as $kid_id) {
+            $kid = UserKid::where([['id', $kid_id], ['user_id', $user_id]])->first();
+            if ($kid) {
+                // 画像ファイルがある場合、削除する
+                if ($kid->photo_name) {
+                    //ファイルの削除
+                    Storage::disk('public')->delete($kid->photo_name);
+                }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        $kid = UserKid::where('id', $id)->first();
-        if (!$kid) {
-            return response()->json([
-                'message' => 'kid not found'
-            ], 404);
+                $kid->delete();
+            }
         }
-        $kid->delete();
 
-        return ['message' => 'delete kid'];
+        $kids = UserKid::where('user_id', $user_id)->get();
+        return ['kids' => $kids];
     }
 
     /**
@@ -244,5 +129,33 @@ class ProfilesKidsController extends Controller
             'message' => 'Image uploaded successfully',
             'file_name' => $file_name
         ];
+    }
+
+    private function setKidUpdateProps($kid, $data)
+    {
+        if (!empty($data['last_name'])) {
+            $kid->last_name = $data['last_name'];
+        }
+        if (!empty($data['first_name'])) {
+            $kid->first_name = $data['first_name'];
+        }
+        if (!empty($data['last_kana'])) {
+            $kid->last_kana = $data['last_kana'];
+        }
+        if (!empty($data['first_kana'])) {
+            $kid->first_kana = $data['first_kana'];
+        }
+        if (!empty($data['birthday'])) {
+            $kid->birthday = $data['birthday'];
+        }
+        if (!empty($data['sex'])) {
+            $kid->sex = $data['sex'];
+        }
+        if (!empty($data['allergy'])) {
+            $kid->allergy = $data['allergy'];
+        }
+        if (!empty($data['other_notes'])) {
+            $kid->other_notes = $data['other_notes'];
+        }
     }
 }

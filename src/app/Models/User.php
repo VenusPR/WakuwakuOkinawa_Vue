@@ -10,7 +10,9 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens;
+    use HasFactory;
+    use Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -44,7 +46,8 @@ class User extends Authenticatable
         'photo_name',
         'emergency_contact_name',
         'emergency_contact_relation',
-        'emergency_contact_tel'
+        'emergency_contact_tel',
+        'firebase_user_id',
     ];
 
 
