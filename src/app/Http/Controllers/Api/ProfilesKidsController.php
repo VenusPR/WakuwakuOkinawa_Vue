@@ -35,38 +35,43 @@ class ProfilesKidsController extends Controller
         $user_id = 1;
 
         // この処理は、ユーザに紐づくすべてのkidsの作成、更新、削除を行います。
-        foreach ($request->kids as $kidData) {
-            $kid = null;
-            if ($kidData['id']) {
-                // 更新
-                $kid = UserKid::where([['id', $kidData['id']], ['user_id', $user_id]])->first();
-                if (!$kid) {
-                        return response()->json([
-                            'message' => 'kid not found'
-                        ], 404);
+        if ($request->kids) {
+            foreach ($request->kids as $kidData) {
+                $kid = null;
+                if (isset($kidData['id'])) {
+                    // 更新
+                    $kid = UserKid::where([['id', $kidData['id']], ['user_id', $user_id]])->first();
+                    if (!$kid) {
+                            return response()->json([
+                                'message' => 'kid not found'
+                            ], 404);
+                    }
+                    $this->setKidUpdateProps($kid, $kidData);
+                } else {
+                    // 作成
+                    $kid = new UserKid();
+                    $kid->user_id = $user_id;
+                    $this->setKidUpdateProps($kid, $kidData);
                 }
-                $this->setKidUpdateProps($kid, $kidData);
-            } else {
-                // 作成
-                $kid = new UserKid();
-                $kid->user_id = $user_id;
-                $this->setKidUpdateProps($kid, $kidData);
-            }
 
-            $kid->save();
+                $kid->save();
+            }
         }
 
-        // 削除
-        foreach ($request->delete_kid_ids as $kid_id) {
-            $kid = UserKid::where([['id', $kid_id], ['user_id', $user_id]])->first();
-            if ($kid) {
-                // 画像ファイルがある場合、削除する
-                if ($kid->photo_name) {
-                    //ファイルの削除
-                    Storage::disk('public')->delete($kid->photo_name);
-                }
 
-                $kid->delete();
+        // 削除
+        if ($request->delete_kid_ids) {
+            foreach ($request->delete_kid_ids as $kid_id) {
+                $kid = UserKid::where([['id', $kid_id], ['user_id', $user_id]])->first();
+                if ($kid) {
+                    // 画像ファイルがある場合、削除する
+                    if ($kid->photo_name) {
+                        //ファイルの削除
+                        Storage::disk('public')->delete($kid->photo_name);
+                    }
+
+                    $kid->delete();
+                }
             }
         }
 

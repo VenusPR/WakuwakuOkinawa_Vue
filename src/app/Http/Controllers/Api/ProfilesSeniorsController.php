@@ -24,181 +24,57 @@ class ProfilesSeniorsController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Save seniros in storage.
      *
      * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function saveSeniors(Request $request)
     {
         $user_id = 1;
 
-        if (UserSenior::where('user_id', $user_id)->count() > 1) {
-            return response()->json([
-                'message' => 'すでに２人登録されています'
-            ], 400);
+        // ユーザに紐づくすべてのseniorsの作成、更新、削除を行います。
+        if ($request->seniors) {
+            foreach ($request->seniors as $seniorData) {
+                $senior = null;
+                if (isset($seniorData['id'])) {
+                    // 更新
+                    $senior = UserSenior::where([['id', $seniorData['id']], ['user_id', $user_id]])->first();
+                    if (!$senior) {
+                        return response()->json([
+                            'message' => 'senior not found'
+                        ], 404);
+                    }
+                    $this->setSeniorUpdateProps($senior, $seniorData);
+                } else {
+                    // 作成
+                    $senior = new UserSenior();
+                    $senior->user_id = $user_id;
+                    $this->setSeniorUpdateProps($senior, $seniorData);
+                }
+
+                $senior->save();
+            }
         }
 
-        $seniors = new UserSenior();
-        $seniors->user_id = $user_id;
-        $seniors->last_name = $request->last_name;
-        $seniors->first_name = $request->first_name;
-        $seniors->last_kana = $request->last_kana;
-        $seniors->first_kana = $request->first_kana;
-        $seniors->birthday = $request->birthday;
-        $seniors->sex = $request->sex;
-        $seniors->allergy = $request->allergy;
-        $seniors->other_notes = $request->other_notes;
-        $seniors->tel = $request->tel;
-        $seniors->save();
-
-        return ['message' => 'created senior'];
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        $senior = UserSenior::where('id', $id)->first();
-        if (!$senior) {
-            return response()->json([
-                'message' => 'senior not found'
-            ], 404);
-        }
-        return $senior;
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     * last_name
-     * first_name
-     * last_kana
-     * first_kana
-     * birthday
-     * sex
-     * allergy
-     * other_notes
-     * tel
-     */
-    public function update(Request $request, $id)
-    {
-        $senior = UserSenior::where('id', $id)->first();
-        if (!$senior) {
-            return response()->json([
-                'message' => 'senior not found'
-            ], 404);
-        }
-        if (!empty($request->last_name)) {
-            $senior->last_name = $request->last_name;
-        }
-        if (!empty($request->first_name)) {
-            $senior->first_name = $request->first_name;
-        }
-        if (!empty($request->last_kana)) {
-            $senior->last_kana = $request->last_kana;
-        }
-        if (!empty($request->first_kana)) {
-            $senior->first_kana = $request->first_kana;
-        }
-        if (!empty($request->birthday)) {
-            $senior->birthday = $request->birthday;
-        }
-        if (!empty($request->sex)) {
-            $senior->sex = $request->sex;
-        }
-        if (!empty($request->allergy)) {
-            $senior->allergy = $request->allergy;
-        }
-        if (!empty($request->other_notes)) {
-            $senior->other_notes = $request->other_notes;
-        }
-        if (!empty($request->tel)) {
-            $senior->tel = $request->tel;
-        }
-        $senior->save();
-
-        return ['message' => 'updated senior info'];
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function multiUpdate(Request $request)
-    {
-        // $seniorsData = json_decode($request->getContent(), true);
-        $seniorsData = $request->seniors;
-        foreach ($seniorsData as $seniorData) {
-            $senior = UserSenior::where('id', $seniorData['id'])->first();
-            // dd($seniorData);
-            if (!$senior) {
+        // 削除
+        if ($request->delete_senior_ids) {
+            foreach ($request->delete_senior_ids as $senior_id) {
+                $senior = UserSenior::where([['id', $senior_id], ['user_id', $user_id]])->first();
+                if (!$senior) {
                     return response()->json([
-                        'message' => 'Senior not found'
+                        'message' => 'senior not found'
                     ], 404);
+                }
+                $senior->delete();
             }
-            if (!empty($seniorData['last_name'])) {
-                $senior->last_name = $seniorData['last_name'];
-            }
-            if (!empty($seniorData['first_name'])) {
-                $senior->first_name = $seniorData['first_name'];
-            }
-            if (!empty($seniorData['last_kana'])) {
-                $senior->last_kana = $seniorData['last_kana'];
-            }
-            if (!empty($seniorData['first_kana'])) {
-                $senior->first_kana = $seniorData['first_kana'];
-            }
-            if (!empty($seniorData['birthday'])) {
-                $senior->birthday = $seniorData['birthday'];
-            }
-            if (!empty($seniorData['sex'])) {
-                $senior->sex = $seniorData['sex'];
-            }
-            if (!empty($seniorData['allergy'])) {
-                $senior->allergy = $seniorData['allergy'];
-            }
-            if (!empty($seniorData['other_notes'])) {
-                $senior->other_notes = $seniorData['other_notes'];
-            }
-            if (!empty($seniorData['tel'])) {
-                $senior->tel = $seniorData['tel'];
-            }
-            $senior->save();
         }
 
-        return ['message' => 'updated senior info'];
+
+        $seniors = UserSenior::where('user_id', $user_id)->get();
+        return ['seniors' => $seniors];
     }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        $senior = UserSenior::where('id', $id)->first();
-        if (!$senior) {
-            return response()->json([
-                'message' => 'senior not found'
-            ], 404);
-        }
-        $senior->delete();
-
-        return ['message' => 'delete senior'];
-    }
-
     /**
      * 画像ファイルのアップロード
      *
@@ -254,5 +130,36 @@ class ProfilesSeniorsController extends Controller
             'message' => 'Image uploaded successfully',
             'file_name' => $file_name
         ];
+    }
+
+    private function setSeniorUpdateProps($senior, $data)
+    {
+        if (!empty($data['last_name'])) {
+            $senior->last_name = $data['last_name'];
+        }
+        if (!empty($data['first_name'])) {
+            $senior->first_name = $data['first_name'];
+        }
+        if (!empty($data['last_kana'])) {
+            $senior->last_kana = $data['last_kana'];
+        }
+        if (!empty($data['first_kana'])) {
+            $senior->first_kana = $data['first_kana'];
+        }
+        if (!empty($data['birthday'])) {
+            $senior->birthday = $data['birthday'];
+        }
+        if (!empty($data['sex'])) {
+            $senior->sex = $data['sex'];
+        }
+        if (!empty($data['allergy'])) {
+            $senior->allergy = $data['allergy'];
+        }
+        if (!empty($data['other_notes'])) {
+            $senior->other_notes = $data['other_notes'];
+        }
+        if (!empty($data['tel'])) {
+            $senior->tel = $data['tel'];
+        }
     }
 }

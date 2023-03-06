@@ -40,6 +40,6 @@ Route::get('/profiles/me/kids', [ProfilesKidsController::class, 'index']);
 Route::post('/profiles/me/kids', [ProfilesKidsController::class, 'saveKids']);
 Route::post('/profiles/me/kids/{id}/photo', [ProfilesKidsController::class, 'updatePhoto']);
 
+Route::get('/profiles/me/seniors', [ProfilesSeniorsController::class, 'index']);
+Route::post('/profiles/me/seniors', [ProfilesSeniorsController::class, 'saveSeniors']);
 Route::post('/profiles/me/seniors/{id}/photo', [ProfilesSeniorsController::class, 'updatePhoto']);
-Route::put('/profiles/me/seniors/multiupdate', [ProfilesSeniorsController::class, 'multiUpdate']);
-Route::apiResource('/profiles/me/seniors', ProfilesSeniorsController::class);

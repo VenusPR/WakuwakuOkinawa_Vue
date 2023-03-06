@@ -223,23 +223,12 @@ class ApiClient {
     // seniors
     // ----------------------------------------
     static async getSeniors() {
-        var res = await ApiClient.callGet('/profiles/me/seniors');
-        res.data = res.data.seniors;
-        return res;
+        return await ApiClient.callGet('/profiles/me/seniors');
     }
-    static async addSenior(data) {
+    static async saveSeniors(data) {
         return await ApiClient.callPost('/profiles/me/seniors', data);
     }
-    static async updateSenior(id, data) {
-        return await ApiClient.callPut('/profiles/me/seniors/' + id, data);
-    }
-    static async multiUpdateSeniors(data) {
-        // console.log(data);
-        return await ApiClient.callPut('/profiles/me/seniors/multiupdate', data);
-    }
-    static async deleteSenior(id) {
-        return await ApiClient.callDelete('/profiles/me/seniors/' + id);
-    }
+    
     static async updateSeniorPhoto(id,data) {
         let formData = new FormData()
         formData.append('file', data)
