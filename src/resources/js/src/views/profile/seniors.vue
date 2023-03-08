@@ -361,10 +361,7 @@
                                 </div>
 
                                 <div
-                                    v-if="
-                                        isInputMode &&
-                                        Object.keys(errors).length > 0
-                                    "
+                                    v-if="Object.keys(errors).length > 0"
                                     class="error"
                                     style="margin-bottom: 1rem"
                                 >
@@ -436,8 +433,6 @@ export default {
             isLoaded: false,
             isSubmitting: false,
             errorMessage: "",
-            isInputMode: true,
-            seniorsData: null,
             form: {
                 seniors: [],
                 deleteSeniorIds: [],
