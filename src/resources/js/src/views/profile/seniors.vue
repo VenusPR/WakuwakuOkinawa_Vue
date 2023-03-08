@@ -361,7 +361,7 @@
                                 </div>
 
                                 <div
-                                    v-if:="
+                                    v-if="
                                         isInputMode &&
                                         Object.keys(errors).length > 0
                                     "
