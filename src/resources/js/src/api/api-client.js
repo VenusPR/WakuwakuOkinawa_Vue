@@ -30,11 +30,17 @@ class ApiClient {
         }
 
         var reqData = option.useConvertRequest ? ApiClient.toRequestData(data) : data
-        var res = await axios.post(ApiClient.baseUrl + path, reqData, config);
-        if (option.useConvertResponse) {
-            return ApiClient.getApiResult(res)
+        try {
+            var res = await axios.post(ApiClient.baseUrl + path, reqData, config);
+            return option.useConvertResponse ? ApiClient.getApiResult(res) : res;
+
+        } catch (e) {
+            console.error(e.response);
+            if (e.response) {
+                return option.useConvertResponse ? ApiClient.getApiResult(e.response) : e.response;
+            }
+            throw e;
         }
-        return res
     }
 
     static async callGet(path, data, config = {}, option = {}) {
@@ -46,11 +52,17 @@ class ApiClient {
         }
 
         var reqData = option.useConvertRequest ? ApiClient.toRequestData(data) : data
-        var res = await axios.get(ApiClient.baseUrl + path, config);
-        if (option.useConvertResponse) {
-            return ApiClient.getApiResult(res)
+        try {
+            var res = await axios.get(ApiClient.baseUrl + path, { ...config, params: reqData });
+            return option.useConvertResponse ? ApiClient.getApiResult(res) : res;
+
+        } catch (e) {
+            console.error(e.response);
+            if (e.response) {
+                return option.useConvertResponse ? ApiClient.getApiResult(e.response) : e.response;
+            }
+            throw e;
         }
-        return res
     }
 
     static async callPut(path, data, config = {}, option = {}) {
@@ -62,11 +74,17 @@ class ApiClient {
         }
 
         var reqData = option.useConvertRequest ? ApiClient.toRequestData(data) : data
-        var res = await axios.put(ApiClient.baseUrl + path, reqData, config);
-        if (option.useConvertResponse) {
-            return ApiClient.getApiResult(res)
+        try {
+            var res = await axios.put(ApiClient.baseUrl + path, reqData, config);
+            return option.useConvertResponse ? ApiClient.getApiResult(res) : res;
+
+        } catch (e) {
+            console.error(e.response);
+            if (e.response) {
+                return option.useConvertResponse ? ApiClient.getApiResult(e.response) : e.response;
+            }
+            throw e;
         }
-        return res
     }
 
     static async callDelete(path, config = {}, option = {}) {
@@ -77,9 +95,15 @@ class ApiClient {
             ApiClient.setAuthorizationHeader(config);
         }
 
-        var res = await axios.delete(ApiClient.baseUrl + path, config);
-        if (option.useConvertResponse) {
-            return ApiClient.getApiResult(res)
+        try {
+            var res = await axios.delete(ApiClient.baseUrl + path, config);
+            return option.useConvertResponse ? ApiClient.getApiResult(res) : res;
+        } catch (e) {
+            console.error(e.response);
+            if (e.response) {
+                return option.useConvertResponse ? ApiClient.getApiResult(e.response) : e.response;
+            }
+            throw e;
         }
         return res
     }
@@ -90,12 +114,11 @@ class ApiClient {
         config = config ? config : {}
         var headers = config.headers ? config.headers : {}
         headers = { ...headers, ...{ 'Content-Type': 'multipart/form-data' } }
-
+        config = { ...config, headers: headers }
         if (option.useAuth) {
-            ApiClient.setAuthorizationHeader(headers);
+            ApiClient.setAuthorizationHeader(config);
         }
 
-        config = { ...config, headers: headers }
         return await ApiClient.callPost(path, data, config, { useConvertRequest: false })
     }
 
@@ -104,6 +127,13 @@ class ApiClient {
     }
 
     static getApiResult(res) {
+        if (res.status == 500) {
+            return {
+                isError: ApiClient.isError(res),
+                data: null,
+                res: res,
+            }
+        }
         return {
             isError: ApiClient.isError(res),
             data: res.data ? camelcaseKeys(res.data, { deep: true }) : null,
@@ -177,37 +207,32 @@ class ApiClient {
     // kids
     // ----------------------------------------
     static async getKids() {
-        var res = await ApiClient.callGet('/profiles/me/kids');
-
-        // NOTE: 子供は3人まで
-        // var kid = (res.data && res.data.kids.length > 2) ? res.data.kids[0] : null
-        // res.kid = kid
-        res.data = res.data.kids;
-        // console.log(res)
-        return res;
+        return await ApiClient.callGet('/profiles/me/kids');
     }
 
-    static async addKid(data) {
+    static async saveKids(data) {
         return await ApiClient.callPost('/profiles/me/kids', data);
     }
 
-    static async updateKid(id, data) {
-        return await ApiClient.callPut('/profiles/me/kids/' + id, data);
-    }
-    static async multiUpdateKids(data) {
-        // console.log(data);
-        const headers = { 'Content-Type': 'application/json' };
-        return await ApiClient.callPut('/profiles/me/kids/multiupdate', data,headers);
-    }
-
-    static async deleteKid(id) {
-        return await ApiClient.callDelete('/profiles/me/kids/' + id);
-    }
-
-    static async updateKidPhoto(id,data) {
+    static async updateKidPhoto(id, data) {
         let formData = new FormData()
         formData.append('file', data)
-        return await ApiClient.callPostFormData('/profiles/me/kids/' +id+'/photo/', formData);
+        return await ApiClient.callPostFormData('/profiles/me/kids/' + id + '/photo/', formData);
+    }
+    // ----------------------------------------
+    // seniors
+    // ----------------------------------------
+    static async getSeniors() {
+        return await ApiClient.callGet('/profiles/me/seniors');
+    }
+    static async saveSeniors(data) {
+        return await ApiClient.callPost('/profiles/me/seniors', data);
+    }
+    
+    static async updateSeniorPhoto(id,data) {
+        let formData = new FormData()
+        formData.append('file', data)
+        return await ApiClient.callPostFormData('/profiles/me/seniors/' +id+'/photo/', formData);
     }
 }
 export default ApiClient;

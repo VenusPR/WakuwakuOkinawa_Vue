@@ -108,6 +108,9 @@
                                                     v-bind="field"
                                                     value="1"
                                                     :id="option.key"
+                                                    :checked="
+                                                        form.sex == option.value
+                                                    "
                                                 />
                                                 <label
                                                     :for="option.key"
@@ -234,7 +237,6 @@
                                         type="text"
                                         class="form-control"
                                         placeholder=""
-                                        required="true"
                                     />
                                     <ErrorMessage
                                         name="emergencyContactRelation"
@@ -416,19 +418,6 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.btn {
-    margin-left: 0.5rem;
-    margin-right: 0.5rem;
-}
-
-.error {
-    color: red; // TODO: 後で共通化
-}
-
-.text-link {
-    color: #0d95f6; // TODO: 後で共通化
-}
-
 .basic-info {
     margin-bottom: 1rem;
     th {
@@ -436,16 +425,7 @@ export default {
         font-weight: normal;
     }
 }
-.input-radio {
-    input[type="radio"] {
-        margin-right: 0.5rem;
-        margin-left: 0.5rem;
-    }
-    label {
-        margin: 0;
-        padding: 0;
-    }
-}
+
 .profile-photo {
     height: 200px;
     width: 200px;

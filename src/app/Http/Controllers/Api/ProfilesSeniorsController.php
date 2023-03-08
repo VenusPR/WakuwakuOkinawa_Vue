@@ -4,11 +4,11 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\UserKid;
+use App\Models\UserSenior;
+use App\Models\User;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Log;
 
-class ProfilesKidsController extends Controller
+class ProfilesSeniorsController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,68 +17,64 @@ class ProfilesKidsController extends Controller
      */
     public function index()
     {
+        //
         $user_id = 1;
-
-        $kids = UserKid::where('user_id', $user_id)->get();
-        return ["kids" => $kids];
+        $seniors = UserSenior::where('user_id', $user_id)->get();
+        return ["seniors" => $seniors];
     }
 
     /**
-     * Save kids in storage.
+     * Save seniros in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function saveKids(Request $request)
+    public function saveSeniors(Request $request)
     {
         $user_id = 1;
 
-        // この処理は、ユーザに紐づくすべてのkidsの作成、更新、削除を行います。
-        if ($request->kids) {
-            foreach ($request->kids as $kidData) {
-                $kid = null;
-                if (isset($kidData['id'])) {
+        // ユーザに紐づくすべてのseniorsの作成、更新、削除を行います。
+        if ($request->seniors) {
+            foreach ($request->seniors as $seniorData) {
+                $senior = null;
+                if (isset($seniorData['id'])) {
                     // 更新
-                    $kid = UserKid::where([['id', $kidData['id']], ['user_id', $user_id]])->first();
-                    if (!$kid) {
-                            return response()->json([
-                                'message' => 'kid not found'
-                            ], 404);
+                    $senior = UserSenior::where([['id', $seniorData['id']], ['user_id', $user_id]])->first();
+                    if (!$senior) {
+                        return response()->json([
+                            'message' => 'senior not found'
+                        ], 404);
                     }
-                    $this->setKidUpdateProps($kid, $kidData);
+                    $this->setSeniorUpdateProps($senior, $seniorData);
                 } else {
                     // 作成
-                    $kid = new UserKid();
-                    $kid->user_id = $user_id;
-                    $this->setKidUpdateProps($kid, $kidData);
+                    $senior = new UserSenior();
+                    $senior->user_id = $user_id;
+                    $this->setSeniorUpdateProps($senior, $seniorData);
                 }
 
-                $kid->save();
+                $senior->save();
             }
         }
-
 
         // 削除
-        if ($request->delete_kid_ids) {
-            foreach ($request->delete_kid_ids as $kid_id) {
-                $kid = UserKid::where([['id', $kid_id], ['user_id', $user_id]])->first();
-                if ($kid) {
-                    // 画像ファイルがある場合、削除する
-                    if ($kid->photo_name) {
-                        //ファイルの削除
-                        Storage::disk('public')->delete($kid->photo_name);
-                    }
-
-                    $kid->delete();
+        if ($request->delete_senior_ids) {
+            foreach ($request->delete_senior_ids as $senior_id) {
+                $senior = UserSenior::where([['id', $senior_id], ['user_id', $user_id]])->first();
+                if (!$senior) {
+                    return response()->json([
+                        'message' => 'senior not found'
+                    ], 404);
                 }
+                $senior->delete();
             }
         }
 
-        $kids = UserKid::where('user_id', $user_id)->get();
-        return ['kids' => $kids];
-    }
 
+        $seniors = UserSenior::where('user_id', $user_id)->get();
+        return ['seniors' => $seniors];
+    }
     /**
      * 画像ファイルのアップロード
      *
@@ -115,20 +111,20 @@ class ProfilesKidsController extends Controller
                 'message' => '画像が選択されていません'
             ], 400);
         }
-        $path = $request->file->store('public/profile/kids_photo');
+        $path = $request->file->store('public/profile/seniors_photo');
         // $user = Auth::user();
-        $kid = UserKid::where('id', $id)->first();
-        $file_name = '/storage/profile/kids_photo/' . basename($path);
+        $senior = UserSenior::where('id', $id)->first();
+        $file_name = '/storage/profile/seniors_photo/' . basename($path);
         //ファイルがある場合
-        if ($kid->photo_name) {
+        if ($senior->photo_name) {
             //ファイルの削除
-            Storage::disk('public')->delete($kid->photo_name);
+            Storage::disk('public')->delete($senior->photo_name);
         }
 
         // $user->photo = $file_path;
-        $kid->photo_name = $file_name;
+        $senior->photo_name = $file_name;
 
-        $kid->save();
+        $senior->save();
 
         return [
             'message' => 'Image uploaded successfully',
@@ -136,31 +132,34 @@ class ProfilesKidsController extends Controller
         ];
     }
 
-    private function setKidUpdateProps($kid, $data)
+    private function setSeniorUpdateProps($senior, $data)
     {
         if (!empty($data['last_name'])) {
-            $kid->last_name = $data['last_name'];
+            $senior->last_name = $data['last_name'];
         }
         if (!empty($data['first_name'])) {
-            $kid->first_name = $data['first_name'];
+            $senior->first_name = $data['first_name'];
         }
         if (!empty($data['last_kana'])) {
-            $kid->last_kana = $data['last_kana'];
+            $senior->last_kana = $data['last_kana'];
         }
         if (!empty($data['first_kana'])) {
-            $kid->first_kana = $data['first_kana'];
+            $senior->first_kana = $data['first_kana'];
         }
         if (!empty($data['birthday'])) {
-            $kid->birthday = $data['birthday'];
+            $senior->birthday = $data['birthday'];
         }
         if (!empty($data['sex'])) {
-            $kid->sex = $data['sex'];
+            $senior->sex = $data['sex'];
         }
         if (!empty($data['allergy'])) {
-            $kid->allergy = $data['allergy'];
+            $senior->allergy = $data['allergy'];
         }
         if (!empty($data['other_notes'])) {
-            $kid->other_notes = $data['other_notes'];
+            $senior->other_notes = $data['other_notes'];
+        }
+        if (!empty($data['tel'])) {
+            $senior->tel = $data['tel'];
         }
     }
 }

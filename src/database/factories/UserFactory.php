@@ -40,6 +40,7 @@ class UserFactory extends Factory
             'emergency_contact_name' => $this->faker->name(),
             // 'emergency_contact_relation' => $this->faker->lastName(),
             'emergency_contact_tel' => $this->faker->phoneNumber(),
+            'firebase_user_id' => "",
         ];
     }
 
