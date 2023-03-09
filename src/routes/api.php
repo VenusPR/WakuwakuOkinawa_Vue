@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\PrefecturesController;
 use App\Http\Controllers\Api\ProfilesController;
 use App\Http\Controllers\Api\ProfilesKidsController;
 use App\Http\Controllers\Api\ProfilesSeniorsController;
+use App\Http\Controllers\Api\SittersController;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,3 +44,10 @@ Route::post('/profiles/me/kids/{id}/photo', [ProfilesKidsController::class, 'upd
 Route::get('/profiles/me/seniors', [ProfilesSeniorsController::class, 'index']);
 Route::post('/profiles/me/seniors', [ProfilesSeniorsController::class, 'saveSeniors']);
 Route::post('/profiles/me/seniors/{id}/photo', [ProfilesSeniorsController::class, 'updatePhoto']);
+
+// Route::apiResource('/sitters', SittersController::class);
+Route::get('/profiles/me', [SittersController::class, 'index']);
+Route::post('/sitters/me/{state}', [SittersController::class, 'saveSitter']);
+Route::get('/sitters/me/option', [SittersController::class, 'addOption']);
+Route::put('/sitters/me/option', [SittersController::class, 'updateOption']);
+Route::delete('/sitters/me/option/{id}', [SittersController::class, 'deleteOption']);
