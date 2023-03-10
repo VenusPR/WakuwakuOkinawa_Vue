@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Sitter;
 use App\Models\Place;
-use App\Models\Option;
+use App\Models\SitterOption;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 
@@ -20,7 +20,7 @@ class SittersController extends Controller
     public function index()
     {
         $user_id = 1;
-        $sitter = Sitter::with('place')->with('option')->where('user_id', $user_id)->first();
+        $sitter = Sitter::with('place')->with('sitterOption')->where('user_id', $user_id)->first();
         return ["sitter" => $sitter];
     }
 
@@ -44,7 +44,7 @@ class SittersController extends Controller
     public function show($id)
     {
         $sitter = Sitter::with('place')
-            ->with('option')
+            ->with('sitterOption')
             ->where('id', $id)
             ->where('state', 1)
             ->first();
@@ -71,7 +71,7 @@ class SittersController extends Controller
         if ($request->sitter) {
             $sitter = Sitter::where('user_id', $user_id)->first();
             $sitter->state = $state;
-            if (!$sitter) {//存在しない場合は新規作成
+            if (!$sitter) { //存在しない場合は新規作成
                 //作成
                 $sitter = new Sitter();
                 $sitter->user_id = $user_id;
@@ -89,7 +89,7 @@ class SittersController extends Controller
             }
         }
 
-        $sitter = Sitter::with('place')->with('option')->where('user_id', $user_id)->first();
+        $sitter = Sitter::with('place')->with('sitterOption')->where('user_id', $user_id)->first();
         return ["sitter" => $sitter];
     }
     /**
@@ -99,10 +99,10 @@ class SittersController extends Controller
     {
         $user_id = 1;
         $sitter = Sitter::where('user_id', $user_id)->first();
-        $option = new Option();
+        $option = new SitterOption();
         $option->sitter_id = $sitter->id;
         $option->save();
-        $optionOne = Option::find($option->id);
+        $optionOne = SitterOption::find($option->id);
         return ["option" => $optionOne];
     }
 
@@ -119,7 +119,7 @@ class SittersController extends Controller
                 $option = null;
                 if (isset($optionData['id'])) {
                     // 更新
-                    $option = Option::where([['id', $optionData['id']], ['sitter_id', $sitter->id]])->first();
+                    $option = SitterOption::where([['id', $optionData['id']], ['sitter_id', $sitter->id]])->first();
                     if (!$option) {
                         return response()->json([
                             'message' => 'option not found'
@@ -130,7 +130,7 @@ class SittersController extends Controller
                 $option->save();
             }
         }
-        $optionList = Option::where('sitter_id', $sitter->id)->get();
+        $optionList = SitterOption::where('sitter_id', $sitter->id)->get();
         return ["option" => $optionList];
     }
 
@@ -141,7 +141,7 @@ class SittersController extends Controller
     {
         $user_id = 1;
         $sitter = Sitter::where('user_id', $user_id)->first();
-        $option = Option::where('sitter_id', $sitter->id)->where('id', $id)->first();
+        $option = SitterOption::where('sitter_id', $sitter->id)->where('id', $id)->first();
         $option->delete();
         return ["message" => 'オプションを削除しました。'];
     }
@@ -188,35 +188,42 @@ class SittersController extends Controller
 
     public function uploadPhotos(Request $request)
     {
-    // ユーザー自身が変更するとき
+        // ユーザー自身が変更するとき
         $this->validate($request, [
-        'file_*' => [
-            // 必須
-            'required',
-            // アップロードされたファイルであること
-            'file',
-            // 画像ファイルであること
-            'image',
-            // MIMEタイプを指定
-            'mimes:jpeg,png,jpg',
-            // 容量
-            'max:2048',
-        ]
+            'file_*' => [
+                // 必須
+                'required',
+                // アップロードされたファイルであること
+                'file',
+                // 画像ファイルであること
+                'image',
+                // MIMEタイプを指定
+                'mimes:jpeg,png,jpg',
+                // 容量
+                'max:2048',
+            ]
         ]);
 
         $user_id = 1;
         $sitter = Sitter::where('user_id', $user_id)->first();
 
+        // バリデーションチェック
         for ($i = 1; $i <= 5; $i++) {
+            $file = $request->file("file_$i");
             if ($request->hasFile("file_$i")) {
-                $file = $request->file("file_$i");
                 if (!$file->isValid()) {
                     return response()->json([
                         'message' => "failed to upload image $i"
                     ], 400);
                 }
+            }
+        }
+
+        for ($i = 1; $i <= 5; $i++) {
+            if ($request->hasFile("file_$i")) {
+                $file = $request->file("file_$i");
                 $path = $file->store("public/sitters_photo/$sitter->id");
-                $file_name = '/storage/sitters_photo/' .$sitter->id.'/'.basename($path);
+                $file_name = '/storage/sitters_photo/' . $sitter->id . '/' . basename($path);
                 //既存のファイルがある場合は削除する
                 if ($sitter->{"photo_$i"}) {
                     Storage::disk('public')->delete($sitter->{"photo_$i"});
@@ -228,14 +235,14 @@ class SittersController extends Controller
         $sitter->save();
 
         return [
-        'message' => 'Images uploaded successfully',
-        'file_names' => [
-            $sitter->photo_1,
-            $sitter->photo_2,
-            $sitter->photo_3,
-            $sitter->photo_4,
-            $sitter->photo_5,
-        ]
+            'message' => 'Images uploaded successfully',
+            'file_names' => [
+                $sitter->photo_1,
+                $sitter->photo_2,
+                $sitter->photo_3,
+                $sitter->photo_4,
+                $sitter->photo_5,
+            ]
         ];
     }
 }

@@ -37,8 +37,8 @@ class Sitter extends Model
         return $this->belongsToMany(Place::class);
     }
 
-    public function option()
+    public function sitterOption()
     {
-        return $this->hasMany(Option::class, 'sitter_id');
+        return $this->hasMany(SitterOption::class, 'sitter_id');
     }
 }

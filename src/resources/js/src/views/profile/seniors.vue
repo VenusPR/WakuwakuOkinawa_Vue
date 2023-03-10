@@ -1,6 +1,6 @@
 <template>
     <div class="layout-px-spacing">
-        <div v-if="!isLoaded">まだだよ</div>
+        <div v-if="!isLoaded"></div>
         <div v-else class="row layout-spacing">
             <!-- Content -->
             <div class="col-sm-12 layout-top-spacing">

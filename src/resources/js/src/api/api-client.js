@@ -234,5 +234,15 @@ class ApiClient {
         formData.append('file', data)
         return await ApiClient.callPostFormData('/profiles/me/seniors/' +id+'/photo/', formData);
     }
+    // ----------------------------------------
+    // sitter
+    // ----------------------------------------
+    static async getSitter() {
+        return await ApiClient.callGet('/sitters/me');
+    }
+    static async updateSitter(data) {
+        return await ApiClient.callPost('/sitters/me', data);
+    }
+    
 }
 export default ApiClient;

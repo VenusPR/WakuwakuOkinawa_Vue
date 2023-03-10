@@ -12,6 +12,7 @@ const routes = [
     { path: '/profile/bank', name: 'ProfileBank', component: () => import('../views/profile/bank.vue'), },
     { path: '/profile/kids', name: 'ProfileKids', component: () => import('../views/profile/kids.vue'), },
     { path: '/profile/seniors', name: 'ProfileSenior', component: () => import('../views/profile/seniors.vue'), },
+    { path: '/sitter', name: 'Sitter', component: () => import('../views/sitter.vue'), },
 
     // ------- 以下は sample --------------------------------
 
