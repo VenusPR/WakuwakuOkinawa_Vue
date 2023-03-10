@@ -8,8 +8,8 @@
   "phpSniffer.executablesFolder": "./src/vendor/bin/",
 
   "[php]": {
-    // "editor.defaultFormatter": "bmewburn.vscode-intelephense-client",
-    "editor.defaultFormatter": "wongjn.php-sniffer",
+    "editor.defaultFormatter": "bmewburn.vscode-intelephense-client",
+    // "editor.defaultFormatter": "wongjn.php-sniffer",
     "editor.formatOnSave": true
   },
 
