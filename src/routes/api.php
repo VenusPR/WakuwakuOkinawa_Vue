@@ -46,7 +46,8 @@ Route::post('/profiles/me/seniors', [ProfilesSeniorsController::class, 'saveSeni
 Route::post('/profiles/me/seniors/{id}/photo', [ProfilesSeniorsController::class, 'updatePhoto']);
 
 // Route::apiResource('/sitters', SittersController::class);
-Route::get('/profiles/me', [SittersController::class, 'index']);
+Route::get('/sitters/me', [SittersController::class, 'index']);
+Route::post('/sitters/me/photo', [SittersController::class, 'uploadPhotos']);
 Route::post('/sitters/me/{state}', [SittersController::class, 'saveSitter']);
 Route::get('/sitters/me/option', [SittersController::class, 'addOption']);
 Route::put('/sitters/me/option', [SittersController::class, 'updateOption']);

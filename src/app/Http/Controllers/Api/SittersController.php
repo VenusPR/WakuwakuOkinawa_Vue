@@ -185,4 +185,57 @@ class SittersController extends Controller
             }
         }
     }
+
+    public function uploadPhotos(Request $request)
+    {
+    // ユーザー自身が変更するとき
+        $this->validate($request, [
+        'file_*' => [
+            // 必須
+            'required',
+            // アップロードされたファイルであること
+            'file',
+            // 画像ファイルであること
+            'image',
+            // MIMEタイプを指定
+            'mimes:jpeg,png,jpg',
+            // 容量
+            'max:2048',
+        ]
+        ]);
+
+        $user_id = 1;
+        $sitter = Sitter::where('user_id', $user_id)->first();
+
+        for ($i = 1; $i <= 5; $i++) {
+            if ($request->hasFile("file_$i")) {
+                $file = $request->file("file_$i");
+                if (!$file->isValid()) {
+                    return response()->json([
+                        'message' => "failed to upload image $i"
+                    ], 400);
+                }
+                $path = $file->store("public/sitters_photo/$sitter->id");
+                $file_name = '/storage/sitters_photo/' .$sitter->id.'/'.basename($path);
+                //既存のファイルがある場合は削除する
+                if ($sitter->{"photo_$i"}) {
+                    Storage::disk('public')->delete($sitter->{"photo_$i"});
+                }
+                $sitter->{"photo_$i"} = $file_name;
+            }
+        }
+
+        $sitter->save();
+
+        return [
+        'message' => 'Images uploaded successfully',
+        'file_names' => [
+            $sitter->photo_1,
+            $sitter->photo_2,
+            $sitter->photo_3,
+            $sitter->photo_4,
+            $sitter->photo_5,
+        ]
+        ];
+    }
 }
