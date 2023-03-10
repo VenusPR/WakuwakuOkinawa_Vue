@@ -1,6 +1,6 @@
 <template>
     <div class="layout-px-spacing">
-        <div v-if="!isLoaded">まだだよ</div>
+        <div v-if="!isLoaded"></div>
         <div v-else class="row layout-spacing">
             <!-- Content -->
             <div class="col-sm-12 layout-top-spacing">
@@ -361,7 +361,7 @@
                                 </div>
 
                                 <div
-                                    v-if="bject.keys(errors).length > 0"
+                                    v-if="Object.keys(errors).length > 0"
                                     class="error"
                                     style="margin-bottom: 1rem"
                                 >
