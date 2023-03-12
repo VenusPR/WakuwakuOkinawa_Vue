@@ -129,70 +129,21 @@
                                                     class="col-form-label"
                                                     >生年月日</label
                                                 >
-                                                <div>
-                                                    <Field
-                                                        v-model="
-                                                            form.kids[index]
-                                                                .birthdayYear
-                                                        "
-                                                        :name="`kids[${index}].birthdayYear`"
-                                                        type="text"
-                                                        maxlength="4"
-                                                        class="form-control"
-                                                        style="
-                                                            width: 80px;
-                                                            display: inline-block;
-                                                            margin-right: 5px;
-                                                        "
-                                                        placeholder=""
-                                                    /><span>年</span>
-                                                    <Field
-                                                        v-model="
-                                                            form.kids[index]
-                                                                .birthdayMonth
-                                                        "
-                                                        :name="`kids[${index}].birthdayMonth`"
-                                                        type="text"
-                                                        maxlength="2"
-                                                        class="form-control"
-                                                        style="
-                                                            width: 60px;
-                                                            display: inline-block;
-                                                            margin-left: 10px;
-                                                            margin-right: 5px;
-                                                        "
-                                                        placeholder=""
-                                                    /><span>月</span>
-                                                    <Field
-                                                        v-model="
-                                                            form.kids[index]
-                                                                .birthdayDay
-                                                        "
-                                                        :name="`kids[${index}].birthdayDay`"
-                                                        type="text"
-                                                        maxlength="2"
-                                                        class="form-control"
-                                                        style="
-                                                            width: 60px;
-                                                            display: inline-block;
-                                                            margin-left: 10px;
-                                                            margin-right: 5px;
-                                                        "
-                                                        placeholder=""
-                                                    /><span>日</span>
-                                                </div>
-                                                <ErrorMessage
-                                                    :name="`kids[${index}].birthdayYear`"
-                                                    class="error"
-                                                />
-                                                <ErrorMessage
-                                                    :name="`kids[${index}].birthdayMonth`"
-                                                    class="error"
-                                                />
-                                                <ErrorMessage
-                                                    :name="`kids[${index}].birthdayDay`"
-                                                    class="error"
-                                                />
+                                                <YmdField
+                                                    :value="
+                                                        form.kids[index]
+                                                            .birthday
+                                                    "
+                                                    :name="`kids[${index}].birthday`"
+                                                    @change="
+                                                        (value) => {
+                                                            onChangeYmd(
+                                                                index,
+                                                                value
+                                                            );
+                                                        }
+                                                    "
+                                                ></YmdField>
                                             </div>
                                             <div>
                                                 <label
@@ -436,6 +387,7 @@
 import ApiClient from "@/api/api-client";
 import "@/assets/sass/scrollspyNav.scss";
 import "@/assets/sass/users/user-profile.scss";
+import YmdField from "@/components/YmdField";
 import { useMeta } from "@/composables/use-meta";
 import { CommonMessage } from "@/messages/common-message";
 import { Validation } from "@/utils/validation";
@@ -448,9 +400,7 @@ const kidSchema = yup.object().shape({
     lastKana: Validation.Required,
     firstKana: Validation.Required,
     sex: Validation.Required,
-    birthdayYear: Validation.Required,
-    birthdayMonth: Validation.Required,
-    birthdayDay: Validation.Required,
+    birthday: Validation.DateYmd,
 });
 
 const schema = yup.object({
@@ -462,6 +412,9 @@ useMeta({ title: "お子様情報" });
 
 <script>
 export default {
+    components: {
+        YmdField,
+    },
     data() {
         return {
             isLoaded: false,
@@ -513,15 +466,6 @@ export default {
             }
 
             this.form.kids = res.data.kids;
-
-            // birthdayを年月日に分割する
-            for (var i = 0; i < this.form.kids.length; i++) {
-                var kid = this.form.kids[i];
-                var birthdayArray = kid.birthday.split("-");
-                kid.birthdayYear = birthdayArray[0];
-                kid.birthdayMonth = birthdayArray[1];
-                kid.birthdayDay = birthdayArray[2];
-            }
         },
 
         async addKid() {
@@ -533,9 +477,7 @@ export default {
                 firstName: "",
                 lastKana: "",
                 firstKana: "",
-                birthdayYear: "",
-                birthdayMonth: "",
-                birthdayDay: "",
+                birthday: "",
                 sex: "",
                 allergy: "",
                 otherNotes: "",
@@ -564,18 +506,6 @@ export default {
                 if (!valid) return;
 
                 this.isSubmitting = true;
-
-                for (var i = 0; i < this.form.kids.length; i++) {
-                    var kid = this.form.kids[i];
-
-                    // birthdayを結合する
-                    kid.birthday =
-                        kid.birthdayYear +
-                        "-" +
-                        kid.birthdayMonth.padStart(2, "0") +
-                        "-" +
-                        kid.birthdayDay.padStart(2, "0");
-                }
 
                 var res = await ApiClient.saveKids(this.form);
                 if (res.isError) {
@@ -613,6 +543,9 @@ export default {
         onChangeKidsPhotoFiles(e, index) {
             if (e.target.files.length === 0) return;
             this.kidsPhotoFiles[index] = e.target.files[0];
+        },
+        onChangeYmd(index, value) {
+            this.form.kids[index].birthday = value.ymd;
         },
     },
 };
