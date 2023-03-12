@@ -7,7 +7,8 @@ import Home from '../views/index.vue';
 
 const routes = [
     { path: '/', name: 'Home', component: Home },
-    { path: '/login', name: 'Login', component: () => import('../views/login.vue'), },
+    { path: '/login', name: 'Login', component: () => import('../views/login/index.vue'), },
+    { path: '/password-reset', name: 'PasswordReset', component: () => import('../views/password-reset/index.vue'), },
     { path: '/profile', name: 'Profile', component: () => import('../views/profile/index.vue'), },
     { path: '/profile/bank', name: 'ProfileBank', component: () => import('../views/profile/bank.vue'), },
     { path: '/profile/kids', name: 'ProfileKids', component: () => import('../views/profile/kids.vue'), },

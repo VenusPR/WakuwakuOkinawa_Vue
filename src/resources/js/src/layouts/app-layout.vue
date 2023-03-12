@@ -1,7 +1,7 @@
 <template>
     <div>
         <!--  BEGIN NAVBAR  -->
-        <Header></Header>
+        <Header v-if="isSampleRoute()"></Header>
         <!--  END NAVBAR  -->
 
         <!--  BEGIN MAIN CONTAINER  -->
@@ -36,11 +36,15 @@
             <!-- END OVERLAY -->
 
             <!--  BEGIN SIDEBAR  -->
-            <Sidebar></Sidebar>
+            <Sidebar v-if="isSampleRoute()"></Sidebar>
             <!--  END SIDEBAR  -->
 
             <!--  BEGIN CONTENT AREA  -->
-            <div id="content" class="main-content">
+            <div
+                id="content"
+                class="main-content"
+                :style="[isSampleRoute() ? {} : { marginTop: 0 }]"
+            >
                 <router-view />
 
                 <!-- BEGIN FOOTER -->
@@ -64,8 +68,9 @@ import Sidebar from "@/components/layout/sidebar.vue";
 <script>
 export default {
     methods: {
-        isSampleURL() {
-            return this.$router.history.current["path"].startsWith("/sample");
+        isSampleRoute() {
+            console.log("route: " + this.$route.path);
+            return this.$route.path.indexOf("/sample") >= 0;
         },
     },
 };

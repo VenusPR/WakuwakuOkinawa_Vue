@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { auth, signInWithEmailAndPassword } from '../firebaseConfig';
+import { auth, firebaseAuth } from '../firebaseConfig';
 
 export const userUserStore = defineStore("user", {
     state: () => {
@@ -7,7 +7,7 @@ export const userUserStore = defineStore("user", {
     },
     actions: {
         async loginByEmail({ email, password }) {
-            return signInWithEmailAndPassword(auth, email, password)
+            return firebaseAuth.signInWithEmailAndPassword(auth, email, password)
                 .then(res => {
                     this.userCredential = res.user
                     this.isLoggedIn = true
@@ -20,6 +20,16 @@ export const userUserStore = defineStore("user", {
                     return false
                 });
         },
+        async resetPassword({ email }) {
+            return firebaseAuth.sendPasswordResetEmail(auth, email)
+                .then(() => {
+                    return true
+                }).catch(e => {
+                    console.error(e);
+                    return false
+                });
+        }
+
         // async register(context, { email, password, name }) {
         //     const response = await createUserWithEmailAndPassword(auth, email, password)
         //     if (response) {

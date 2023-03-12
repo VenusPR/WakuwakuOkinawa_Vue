@@ -140,6 +140,10 @@ export default {
     },
     methods: {
         async login() {
+            this.errorMessage = "";
+            const { valid } = await this.$refs.form.validate();
+            if (!valid) return;
+
             var isOk = await userStore.loginByEmail({
                 email: this.form.email,
                 password: this.form.password,
