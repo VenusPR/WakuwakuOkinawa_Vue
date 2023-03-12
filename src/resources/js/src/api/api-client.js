@@ -161,6 +161,10 @@ class ApiClient {
         return await ApiClient.callGet('/auth/user');
     }
 
+    static async getAuthEmailAvailability(email) {
+        return await ApiClient.callGet('/auth/email/availability', { email: email });
+    }
+
     // ----------------------------------------
     // bank
     // ----------------------------------------
@@ -228,11 +232,11 @@ class ApiClient {
     static async saveSeniors(data) {
         return await ApiClient.callPost('/profiles/me/seniors', data);
     }
-    
-    static async updateSeniorPhoto(id,data) {
+
+    static async updateSeniorPhoto(id, data) {
         let formData = new FormData()
         formData.append('file', data)
-        return await ApiClient.callPostFormData('/profiles/me/seniors/' +id+'/photo/', formData);
+        return await ApiClient.callPostFormData('/profiles/me/seniors/' + id + '/photo/', formData);
     }
     // ----------------------------------------
     // sitter
@@ -243,6 +247,6 @@ class ApiClient {
     static async updateSitter(data) {
         return await ApiClient.callPost('/sitters/me', data);
     }
-    
+
 }
 export default ApiClient;

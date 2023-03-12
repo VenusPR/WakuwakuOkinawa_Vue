@@ -30,6 +30,7 @@ Route::auto('/debug', DebugController::class); // デバッグ用
 
 Route::post('/auth/login', [AuthController::class, 'login']);
 Route::get('/auth/user', [AuthController::class, 'getUser'])->middleware('auth:sanctum');
+Route::get('/auth/email/availability', [AuthController::class, 'getEmailAvailability']);
 
 // Route::auto('/accounts', AccountController::class);
 Route::apiResource('/banks', BanksController::class);

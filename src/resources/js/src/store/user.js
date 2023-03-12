@@ -20,6 +20,7 @@ export const userUserStore = defineStore("user", {
                     return false
                 });
         },
+
         async resetPassword({ email }) {
             return firebaseAuth.sendPasswordResetEmail(auth, email)
                 .then(() => {
@@ -28,7 +29,17 @@ export const userUserStore = defineStore("user", {
                     console.error(e);
                     return false
                 });
-        }
+        },
+
+        async createUserByEmail({ email, password }) {
+            return firebaseAuth.createUserWithEmailAndPassword(auth, email, password)
+                .then(() => {
+                    return true
+                }).catch(e => {
+                    console.error(e);
+                    return false
+                });
+        },
 
         // async register(context, { email, password, name }) {
         //     const response = await createUserWithEmailAndPassword(auth, email, password)

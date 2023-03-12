@@ -55,7 +55,7 @@ class AuthController extends Controller
             // Note: 本当はFrontへ情報を返さないほうがセキュリティ上よいけれど、
             // エラー情報があったほうがデバッグしやすいので、今現在はメッセージを追加
             return response()->json([
-                'message' => "Failed to verify token.". $e->getMessage()
+                'message' => "Failed to verify token." . $e->getMessage()
             ], 401);
         }
     }
@@ -65,5 +65,14 @@ class AuthController extends Controller
         // ログイン済みのユーザーを取得
         $user = $request->user();
         return ["user" => $user];
+    }
+
+    public function getEmailAvailability(Request $request)
+    {
+        $email = $request->email;
+        $user = User::where('email', $email)->first();
+        return [
+            'is_available' => $user ? false : true
+        ];
     }
 }

@@ -1,15 +1,20 @@
 {
-  
-  "[vue]": {
-    "editor.formatOnSave": true
-  },
-
   "phpcs.executablePath": "./src/vendor/bin/phpcs",
   "phpSniffer.executablesFolder": "./src/vendor/bin/",
 
   "[php]": {
     "editor.defaultFormatter": "bmewburn.vscode-intelephense-client",
     // "editor.defaultFormatter": "wongjn.php-sniffer",
+    "editor.formatOnSave": true
+  },
+
+  "[vue]": {
+    "editor.formatOnSave": true
+  },
+  "[javascript]": {
+    "editor.formatOnSave": true
+  },
+  "[typescript]": {
     "editor.formatOnSave": true
   },
 
@@ -20,4 +25,5 @@
     "source.fixAll.eslint": true,
     "source.organizeImports": true
   },
+  "editor.formatOnSave": true
 }

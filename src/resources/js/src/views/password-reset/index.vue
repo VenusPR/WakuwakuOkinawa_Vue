@@ -53,6 +53,19 @@
                                 </button>
                             </div>
                         </Form>
+
+                        <div class="text-center mt-5">
+                            <router-link to="/login" v-slot="{ navigate }">
+                                <button
+                                    type="button"
+                                    class="btn btn-dark"
+                                    :disabled="isSubmitting"
+                                    @click="navigate"
+                                >
+                                    前へ戻る
+                                </button>
+                            </router-link>
+                        </div>
                     </div>
                 </div>
                 <!-- 完了 -->
@@ -106,7 +119,9 @@ useMeta({ title: "パスワード再設定" });
 </script>
 
 <script>
+import { useRouter } from "vue-router";
 const userStore = userUserStore();
+const router = useRouter();
 
 export default {
     data() {

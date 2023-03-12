@@ -76,16 +76,30 @@
                             </div>
 
                             <div class="text-center mt-4">
-                                <a href="#" class="text-link"
-                                    >パスワードを忘れた場合 ＞</a
+                                <router-link
+                                    to="/password-reset"
+                                    class="text-link"
+                                    >パスワードを忘れた場合 ＞</router-link
                                 >
                             </div>
                         </Form>
 
                         <div class="divider"></div>
 
+                        <div class="text-center">
+                            <button
+                                type="button"
+                                class="btn btn-info"
+                                :disabled="isSubmitting"
+                            >
+                                Facebookでログイン / 新規登録
+                            </button>
+                        </div>
+
                         <div class="text-center mt-4">
-                            <a href="#" class="text-link">新規登録へ ＞</a>
+                            <router-link to="/register" class="text-link"
+                                >メールアドレスで新規登録へ ＞</router-link
+                            >
                         </div>
                     </div>
                 </div>
