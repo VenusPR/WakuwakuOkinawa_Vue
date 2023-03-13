@@ -43,7 +43,9 @@
             <div
                 id="content"
                 class="main-content"
-                :style="[isSampleRoute() ? {} : { marginTop: 0 }]"
+                :style="[
+                    isSampleRoute() ? {} : { marginLeft: 0, marginTop: 0 },
+                ]"
             >
                 <router-view />
 
