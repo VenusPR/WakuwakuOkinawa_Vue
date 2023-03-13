@@ -137,7 +137,7 @@
                                                     :name="`kids[${index}].birthday`"
                                                     @change="
                                                         (value) => {
-                                                            onChangeYmd(
+                                                            onChangeBirthday(
                                                                 index,
                                                                 value
                                                             );
@@ -544,7 +544,7 @@ export default {
             if (e.target.files.length === 0) return;
             this.kidsPhotoFiles[index] = e.target.files[0];
         },
-        onChangeYmd(index, value) {
+        onChangeBirthday(index, value) {
             this.form.kids[index].birthday = value.ymd;
         },
     },
