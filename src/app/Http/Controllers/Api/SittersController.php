@@ -82,6 +82,7 @@ class SittersController extends Controller
             // Place(沖縄地域)の同期
             $place_array = array();
             if (isset($request->sitter['place'])) {
+                // dd('koko');
                 foreach ($request->sitter['place'] as $place) {
                     array_push($place_array, $place['id']);
                 }
@@ -160,8 +161,10 @@ class SittersController extends Controller
             'fee',
             'plus_fee',
             'acceptable_number',
-            'childcare_min',
-            'childcare_max',
+            'childcare_min_year',
+            'childcare_min_month',
+            'childcare_max_year',
+            'childcare_max_month',
             'min_support_hour'
         ];
 

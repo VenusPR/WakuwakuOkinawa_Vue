@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\ProfilesController;
 use App\Http\Controllers\Api\ProfilesKidsController;
 use App\Http\Controllers\Api\ProfilesSeniorsController;
 use App\Http\Controllers\Api\SittersController;
+use App\Http\Controllers\Api\PlacesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,3 +54,5 @@ Route::post('/sitters/me/option', [SittersController::class, 'addOption']);
 Route::post('/sitters/me/{state}', [SittersController::class, 'saveSitter']);
 Route::put('/sitters/me/option', [SittersController::class, 'updateOption']);
 Route::delete('/sitters/me/option/{id}', [SittersController::class, 'deleteOption']);
+
+Route::apiResource('/places', PlacesController::class);
