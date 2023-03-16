@@ -10,6 +10,7 @@ const routes = [
     { path: '/login', name: 'Login', component: () => import('../views/login/index.vue'), },
     { path: '/password-reset', name: 'PasswordReset', component: () => import('../views/password-reset/index.vue'), },
     { path: '/register', name: 'Register', component: () => import('../views/register/index.vue'), },
+    { path: '/register/email-verification', name: 'RegisterEmailVerification', component: () => import('../views/register/email-verification.vue'), },
 
     { path: '/profile', name: 'Profile', component: () => import('../views/profile/index.vue'), },
     { path: '/profile/bank', name: 'ProfileBank', component: () => import('../views/profile/bank.vue'), },

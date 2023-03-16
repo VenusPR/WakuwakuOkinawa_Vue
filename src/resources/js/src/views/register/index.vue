@@ -11,7 +11,8 @@
                         </div>
                         <div class="divider"></div>
 
-                        <!-- ログインフォーム -->
+                        <!-- 新規登録 -->
+                        <!-- フォーム -->
                         <Form ref="form" :validationSchema="schema">
                             <div>
                                 <label for="email" class="col-form-label"
@@ -25,9 +26,9 @@
                                 />
                                 <ErrorMessage name="email" class="error" />
                             </div>
-                            <div class="mb-5">
+                            <div>
                                 <label for="password" class="col-form-label"
-                                    >パスワード</label
+                                    >パスワード (半角英数字8文字以上)</label
                                 >
                                 <Field
                                     name="password"
@@ -36,6 +37,23 @@
                                     class="form-control"
                                 />
                                 <ErrorMessage name="password" class="error" />
+                            </div>
+                            <div class="mb-5">
+                                <label
+                                    for="passwordConfirm"
+                                    class="col-form-label"
+                                    >パスワード確認</label
+                                >
+                                <Field
+                                    name="passwordConfirm"
+                                    v-model="form.passwordConfirm"
+                                    type="password"
+                                    class="form-control"
+                                />
+                                <ErrorMessage
+                                    name="passwordConfirm"
+                                    class="error"
+                                />
                             </div>
 
                             <div
@@ -53,7 +71,7 @@
                                     :disabled="isSubmitting"
                                     @click="register"
                                 >
-                                    メールアドレスで新規登録
+                                    新規登録
                                 </button>
                             </div>
 
@@ -82,14 +100,18 @@ import ApiClient from "@/api/api-client";
 import "@/assets/sass/scrollspyNav.scss";
 import "@/assets/sass/users/user-profile.scss";
 import { useMeta } from "@/composables/use-meta";
+import { CommonMessage } from "@/messages/common-message";
 import { userUserStore } from "@/store/user";
 import { Validation } from "@/utils/validation";
 import { ErrorMessage, Field, Form } from "vee-validate";
 import * as yup from "yup";
 
 const schema = yup.object({
-    email: Validation.Required,
-    password: Validation.Required,
+    email: Validation.Email,
+    password: Validation.Password,
+    passwordConfirm: yup
+        .string()
+        .oneOf([yup.ref("password")], "パスワードが一致していません。"),
 });
 
 useMeta({ title: "新規登録" });
@@ -107,6 +129,7 @@ export default {
             form: {
                 email: "",
                 password: "",
+                passwordConfirm: "",
             },
         };
     },
@@ -114,32 +137,32 @@ export default {
         this.isLoaded = true;
     },
     methods: {
+        async check() {
+            var success = await userStore.sendEmailVerification(
+                this.form.email
+            );
+            if (!success) {
+                this.errorMessage =
+                    CommonMessage.FailedTo("メールアドレスの確認");
+                return;
+            }
+            this.errorMessage = "OK";
+        },
         async register() {
             this.errorMessage = "";
             const { valid } = await this.$refs.form.validate();
             if (!valid) return;
             try {
                 this.isSubmitting = true;
-                // var res = await userStore.existsEmail(this.form.email);
-                // if (res.isError) {
-                //     this.errorMessage =
-                //         CommonMessage.FailedTo("メールアドレスの確認");
-                //     console.error(res.data);
-                //     return;
-                // }
-                // if (!res.data.isAvailable) {
-                //     this.errorMessage =
-                //         "このメールアドレスはすでに登録済みです。";
-                //     return;
-                // }
+
+                // メールアドレスの有効性チェック
                 var res = await ApiClient.getAuthEmailAvailability(
                     this.form.email
                 );
-                console.log(res);
                 if (res.isError) {
+                    console.log("res", res);
                     this.errorMessage =
                         CommonMessage.FailedTo("メールアドレスの確認");
-                    console.error(res.data);
                     return;
                 }
                 if (!res.data.isAvailable) {
@@ -148,15 +171,61 @@ export default {
                     return;
                 }
 
-                // var isOk = await userStore.createUserByEmail({
-                //     email: this.form.email,
-                //     password: this.form.password,
-                // });
-                // if (!isOk) {
-                //     this.errorMessage =
-                //         CommonMessage.FailedTo("アカウントの登録");
-                //     return;
-                // }
+                // 登録
+                var createRes = await userStore.createUserByEmail({
+                    email: this.form.email,
+                    password: this.form.password,
+                });
+                if (createRes.error) {
+                    if (createRes.error.code == "auth/email-already-in-use") {
+                        // メールアアドレスがすでに登録済みのため、
+                        // パスワードリセットメールを送信
+                        var success = await userStore.sendPasswordResetEmail({
+                            email: this.form.email,
+                        });
+                        if (!success) {
+                            this.errorMessage =
+                                "メールアドレスがすでに登録済みです。\nパスワードの再設定に失敗しました。";
+                            return;
+                        }
+
+                        this.$router.push({
+                            path: "/password-reset",
+                            state: {
+                                message: "メールアドレスがすでに登録済みです。",
+                                prevUrl: "/register",
+                                email: this.form.email,
+                                phase: 2,
+                            },
+                        });
+                        return;
+                    } else {
+                        this.errorMessage = CommonMessage.FailedTo("新規登録");
+                    }
+                    return;
+                }
+
+                // メールアドレスの確認
+                var firebaseUser = createRes.user;
+                var success = await userStore.sendEmailVerification({
+                    firebaseUser: firebaseUser,
+                });
+                if (!success) {
+                    this.errorMessage =
+                        CommonMessage.FailedTo(
+                            "メールアドレス確認メールの送信"
+                        );
+                    return;
+                }
+
+                this.$router.push({
+                    path: "/register/email-verification",
+                    state: {
+                        message: "",
+                        prevUrl: "/register",
+                        email: this.form.email,
+                    },
+                });
             } finally {
                 this.isSubmitting = false;
             }

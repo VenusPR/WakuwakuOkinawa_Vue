@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Api;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
-use Kreait\Laravel\Firebase\Facades\Firebase;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Kreait\Laravel\Firebase\Facades\Firebase;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Mail\EmailVerification;
 
 class AuthController extends Controller
 {
@@ -75,4 +77,17 @@ class AuthController extends Controller
             'is_available' => $user ? false : true
         ];
     }
+
+    // TODO: メール送信テストコード。後で消す
+    // public function testMail(Request $request)
+    // {
+    //     Mail::send('emails.email_verification', [
+    //         'name' => 'xxx',
+    //         'url' => 'yyyy'
+    //     ], function ($message) {
+    //         $message->subject('【わくわくおきなわ】メールタイトル')
+    //             ->to('test@example.com');
+    //     });
+    //     return;
+    // }
 }

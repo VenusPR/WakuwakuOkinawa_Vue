@@ -9,47 +9,74 @@ export const userUserStore = defineStore("user", {
         async loginByEmail({ email, password }) {
             return firebaseAuth.signInWithEmailAndPassword(auth, email, password)
                 .then(res => {
-                    this.userCredential = res.user
-                    this.isLoggedIn = true
-                    return true
+                    this.userCredential = res.user;
+                    if (res.user.emailVerified) {
+                        this.isLoggedIn = true;
+                    }
+                    return { user: res.user, error: null };
 
                 }).catch(e => {
                     if (e.code != 400) {
                         console.error(e);
                     }
-                    return false
+                    return { user: null, error: e };
+                });
+        },
+
+        async logout() {
+            return firebaseAuth.signOut(auth)
+                .then(() => {
+                    this.userCredential = null;
+                    this.user = null;
+                    this.isLoggedIn = false;
+                    return true;
+
+                }).catch(e => {
+                    console.error(e);
+                    return false;
                 });
         },
 
         async resetPassword({ email }) {
             return firebaseAuth.sendPasswordResetEmail(auth, email)
                 .then(() => {
-                    return true
+                    return true;
                 }).catch(e => {
                     console.error(e);
-                    return false
+                    return false;
                 });
         },
 
         async createUserByEmail({ email, password }) {
             return firebaseAuth.createUserWithEmailAndPassword(auth, email, password)
-                .then(() => {
-                    return true
+                .then(res => {
+                    return { user: res.user, error: null };
                 }).catch(e => {
+                    console.error('ng', e.code);
                     console.error(e);
-                    return false
+                    return { user: null, error: e };
                 });
         },
 
-        // async register(context, { email, password, name }) {
-        //     const response = await createUserWithEmailAndPassword(auth, email, password)
-        //     if (response) {
-        //         context.commit('setUser', response.user)
-        //         // response.user.updateProfile({ displayName: name })
-        //     } else {
-        //         throw new Error('Unable to register user')
-        //     }
-        // },
+        async sendEmailVerification({ firebaseUser }) {
+            return firebaseAuth.sendEmailVerification(firebaseUser)
+                .then(() => {
+                    return true;
+                }).catch(e => {
+                    console.error(e);
+                    return false;
+                });
+        },
+
+        async sendPasswordResetEmail({ email }) {
+            return firebaseAuth.sendPasswordResetEmail(auth, email)
+                .then(() => {
+                    return true;
+                }).catch(e => {
+                    console.error(e);
+                    return false;
+                });
+        }
     },
     getters: {
     },

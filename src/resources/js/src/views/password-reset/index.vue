@@ -55,7 +55,7 @@
                         </Form>
 
                         <div class="text-center mt-5">
-                            <router-link to="/login" v-slot="{ navigate }">
+                            <router-link :to="prevUrl" v-slot="{ navigate }">
                                 <button
                                     type="button"
                                     class="btn btn-dark"
@@ -72,14 +72,24 @@
                 <div v-if="phase == 2" class="panel">
                     <div class="panel-body">
                         <div class="d-flex justify-content-between">
-                            <h3 style="padding-bottom: 1rem">送信しました</h3>
+                            <h3 style="padding-bottom: 1rem">
+                                パスワード再設定メールを送信しました
+                            </h3>
                         </div>
                         <div class="divider"></div>
+
+                        <div v-if="message" class="mb-4">
+                            {{ message }}
+                        </div>
 
                         <div class="mb-4">
                             メールアドレスへ再設定リンクを送信しました。
                             しばらく待っても届かない場合は、下のボタンから
                             再送信してみてください。
+                        </div>
+                        <div class="mb-4 text-center">
+                            送信先のメールアドレス<br />
+                            {{ form.email }}
                         </div>
 
                         <!-- フォーム -->
@@ -102,7 +112,6 @@
 
 <script setup>
 import { userUserStore } from "@/store/user";
-import { storage } from "@/utils/storage";
 
 import "@/assets/sass/scrollspyNav.scss";
 import "@/assets/sass/users/user-profile.scss";
@@ -129,6 +138,8 @@ export default {
             isLoaded: false,
             isSubmitting: false,
             phase: 1,
+            message: "",
+            prevUrl: "",
             errorMessage: "",
             form: {
                 email: "",
@@ -136,10 +147,12 @@ export default {
         };
     },
     mounted() {
-        console.log("Component mounted.");
+        this.phase = window.history.state.phase || 1;
+        this.message = window.history.state.message;
+        this.prevUrl = window.history.state.prevUrl || "/login";
+        this.form.email = window.history.state.email;
 
-        this.rememberLoggedIn = storage.getRememberLoggedIn();
-        console.log("this.rememberLoggedIn", this.rememberLoggedIn);
+        console.log("this.prevUrl", this.prevUrl, this.form.email);
 
         this.isLoaded = true;
     },
@@ -160,7 +173,6 @@ export default {
                         "パスワードのリセットに失敗しました。\nメールアドレスが正しいか確認してください。";
                     return;
                 }
-                console.log("パスワードのリセットに成功しました。");
                 this.phase = 2;
             } finally {
                 this.isSubmitting = false;

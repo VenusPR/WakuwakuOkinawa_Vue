@@ -29,6 +29,14 @@ export const Validation = {
     Required: yup.string()
         .required(ValidationMessage.Required),
 
+    Email: yup.string()
+        .required(ValidationMessage.Required)
+        .email("メールアドレスの形式で入力してください。"),
+
+    Password: yup.string()
+        .required(ValidationMessage.Required)
+        .matches(/^[a-z\d]{8,100}$/m, "パスワードは半角英数字8文字以上で入力してください。"),
+
     DateYmd: yup.string()
         .required(ValidationMessage.Required)
         .test('isDateYmd', "正しい日付を入力してください。", ValidationMethod.isDateYmd)

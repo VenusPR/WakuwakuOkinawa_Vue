@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: ./docker/php/Dockerfile
     volumes:
-      - "./src:/var/www/html"
+      - './src:/var/www/html'
       - ./docker/php/php.ini:/usr/local/etc/php/php.ini
     environment:
       - CACHE_DRIVER=array
@@ -17,7 +17,7 @@ services:
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_PORT=${DB_PORT}
     ports:
-        - ${WEB_PORT}:8000
+      - ${WEB_PORT}:8000
     working_dir: /var/www/html
     command: >
       /bin/bash -c "./tools/start_app_dev.sh"
@@ -29,9 +29,12 @@ services:
   #   volumes:
   #     - ./src:/var/www/html
   #   working_dir: /var/www/html
-  #   command: 
+  #   command:
   #     /bin/bash -c "npm i && npm run watch-poll"
-
+  mail:
+    image: mailhog/mailhog
+    ports:
+      - 8025:8025
   db:
     platform: linux/amd64
     image: mariadb:10.5.18
@@ -59,6 +62,6 @@ services:
       - PMA_USER=${DB_ROOT_USER}
       - PMA_PASSWORD=${DB_ROOT_PASSWORD}
     ports:
-      - "3001:80"
+      - '3001:80'
     volumes:
       - ./docker/phpmyadmin/sessions:/sessions

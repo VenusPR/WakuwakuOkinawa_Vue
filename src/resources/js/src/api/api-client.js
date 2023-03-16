@@ -6,7 +6,7 @@ import snakecaseKeys from "snakecase-keys";
 class ApiException extends Error {
     constructor(res, message) {
         super(message);
-        this.res = res
+        this.res = res;
         this.name = "ApiException";
     }
 }
@@ -22,14 +22,14 @@ class ApiClient {
     static defaultOption = { useConvertRequest: true, useConvertResponse: true, useAuth: true };
 
     static async callPost(path, data, config = {}, option = {}) {
-        option = { ...ApiClient.defaultOption, ...option }
+        option = { ...ApiClient.defaultOption, ...option };
 
-        config = { ...{ headers: {} }, ...config }
+        config = { ...{ headers: {} }, ...config };
         if (option.useAuth) {
             ApiClient.setAuthorizationHeader(config);
         }
 
-        var reqData = option.useConvertRequest ? ApiClient.toRequestData(data) : data
+        var reqData = option.useConvertRequest ? ApiClient.toRequestData(data) : data;
         try {
             var res = await axios.post(ApiClient.baseUrl + path, reqData, config);
             return option.useConvertResponse ? ApiClient.getApiResult(res) : res;
@@ -44,14 +44,14 @@ class ApiClient {
     }
 
     static async callGet(path, data, config = {}, option = {}) {
-        option = { ...ApiClient.defaultOption, ...option }
+        option = { ...ApiClient.defaultOption, ...option };
 
-        config = { ...{ headers: {} }, ...config }
+        config = { ...{ headers: {} }, ...config };
         if (option.useAuth) {
             ApiClient.setAuthorizationHeader(config);
         }
 
-        var reqData = option.useConvertRequest ? ApiClient.toRequestData(data) : data
+        var reqData = option.useConvertRequest ? ApiClient.toRequestData(data) : data;
         try {
             var res = await axios.get(ApiClient.baseUrl + path, { ...config, params: reqData });
             return option.useConvertResponse ? ApiClient.getApiResult(res) : res;
@@ -66,14 +66,14 @@ class ApiClient {
     }
 
     static async callPut(path, data, config = {}, option = {}) {
-        option = { ...ApiClient.defaultOption, ...option }
+        option = { ...ApiClient.defaultOption, ...option };
 
-        config = { ...{ headers: {} }, ...config }
+        config = { ...{ headers: {} }, ...config };
         if (option.useAuth) {
             ApiClient.setAuthorizationHeader(config);
         }
 
-        var reqData = option.useConvertRequest ? ApiClient.toRequestData(data) : data
+        var reqData = option.useConvertRequest ? ApiClient.toRequestData(data) : data;
         try {
             var res = await axios.put(ApiClient.baseUrl + path, reqData, config);
             return option.useConvertResponse ? ApiClient.getApiResult(res) : res;
@@ -88,9 +88,9 @@ class ApiClient {
     }
 
     static async callDelete(path, config = {}, option = {}) {
-        option = { ...ApiClient.defaultOption, ...option }
+        option = { ...ApiClient.defaultOption, ...option };
 
-        config = { ...{ headers: {} }, ...config }
+        config = { ...{ headers: {} }, ...config };
         if (option.useAuth) {
             ApiClient.setAuthorizationHeader(config);
         }
@@ -105,21 +105,21 @@ class ApiClient {
             }
             throw e;
         }
-        return res
+        return res;
     }
 
     static async callPostFormData(path, data, config = {}, option = {}) {
-        option = { ...ApiClient.defaultOption, ...option }
+        option = { ...ApiClient.defaultOption, ...option };
 
-        config = config ? config : {}
-        var headers = config.headers ? config.headers : {}
-        headers = { ...headers, ...{ 'Content-Type': 'multipart/form-data' } }
-        config = { ...config, headers: headers }
+        config = config ? config : {};
+        var headers = config.headers ? config.headers : {};
+        headers = { ...headers, ...{ 'Content-Type': 'multipart/form-data' } };
+        config = { ...config, headers: headers };
         if (option.useAuth) {
             ApiClient.setAuthorizationHeader(config);
         }
 
-        return await ApiClient.callPost(path, data, config, { useConvertRequest: false })
+        return await ApiClient.callPost(path, data, config, { useConvertRequest: false });
     }
 
     static isError(res) {
@@ -132,17 +132,17 @@ class ApiClient {
                 isError: ApiClient.isError(res),
                 data: null,
                 res: res,
-            }
+            };
         }
         return {
             isError: ApiClient.isError(res),
             data: res.data ? camelcaseKeys(res.data, { deep: true }) : null,
             res: res,
-        }
+        };
     }
 
     static toRequestData(data) {
-        if (data == null) return null
+        if (data == null) return null;
         return snakecaseKeys(data, { deep: true });
     }
 
@@ -172,8 +172,8 @@ class ApiClient {
         var res = await ApiClient.callGet('/banks');
 
         // NOTE: 現在は銀行口座は１つのみ保持する
-        var bank = (res.data && res.data.banks.length > 0) ? res.data.banks[0] : null
-        res.data = bank
+        var bank = (res.data && res.data.banks.length > 0) ? res.data.banks[0] : null;
+        res.data = bank;
         return res;
     }
 
@@ -202,8 +202,8 @@ class ApiClient {
     }
 
     static async updateProfilePhoto(data) {
-        let formData = new FormData()
-        formData.append('file', data)
+        let formData = new FormData();
+        formData.append('file', data);
         return await ApiClient.callPostFormData('/profiles/me/photo', formData);
     }
 
@@ -219,8 +219,8 @@ class ApiClient {
     }
 
     static async updateKidPhoto(id, data) {
-        let formData = new FormData()
-        formData.append('file', data)
+        let formData = new FormData();
+        formData.append('file', data);
         return await ApiClient.callPostFormData('/profiles/me/kids/' + id + '/photo/', formData);
     }
     // ----------------------------------------
@@ -234,8 +234,8 @@ class ApiClient {
     }
 
     static async updateSeniorPhoto(id, data) {
-        let formData = new FormData()
-        formData.append('file', data)
+        let formData = new FormData();
+        formData.append('file', data);
         return await ApiClient.callPostFormData('/profiles/me/seniors/' + id + '/photo/', formData);
     }
     // ----------------------------------------

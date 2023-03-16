@@ -79,6 +79,7 @@
                                 <router-link
                                     to="/password-reset"
                                     class="text-link"
+                                    :disabled="isSubmitting"
                                     >パスワードを忘れた場合 ＞</router-link
                                 >
                             </div>
@@ -97,7 +98,10 @@
                         </div>
 
                         <div class="text-center mt-4">
-                            <router-link to="/register" class="text-link"
+                            <router-link
+                                to="/register"
+                                class="text-link"
+                                :disabled="isSubmitting"
                                 >メールアドレスで新規登録へ ＞</router-link
                             >
                         </div>
@@ -158,50 +162,79 @@ export default {
             const { valid } = await this.$refs.form.validate();
             if (!valid) return;
 
-            var isOk = await userStore.loginByEmail({
-                email: this.form.email,
-                password: this.form.password,
-            });
-            if (!isOk) {
-                this.errorMessage =
-                    "ログインに失敗しました。\nメールアドレスまたはパスワードが間違っています。";
-                return;
+            try {
+                this.isSubmitting = true;
+
+                var res = await userStore.loginByEmail({
+                    email: this.form.email,
+                    password: this.form.password,
+                });
+                if (res.error) {
+                    this.errorMessage =
+                        "ログインに失敗しました。\nメールアドレスまたはパスワードが間違っています。";
+                    return;
+                }
+                if (!res.user.emailVerified) {
+                    // メールアドレスの確認が必要な場合の処理
+                    var success = await userStore.sendEmailVerification({
+                        firebaseUser: res.user,
+                    });
+
+                    if (!success) {
+                        this.errorMessage =
+                            "メール認証が完了していません。認証メールの送信に失敗しました。";
+                        return;
+                    }
+                    await userStore.logout();
+
+                    this.$router.push({
+                        path: "/register/email-verification",
+                        state: {
+                            message: "メール認証が完了していません。",
+                            prevUrl: "/login",
+                            email: this.form.email,
+                        },
+                    });
+                    return;
+                }
+
+                // // TODO: テスト用ログ
+                // console.log(
+                //     "debug accessToken",
+                //     userStore.userCredential.accessToken
+                // );
+
+                // login
+                var res = await ApiClient.authLogin(
+                    userStore.userCredential.accessToken
+                );
+                if (res.isError) {
+                    console.error(res.data);
+                    this.errorMessage = "ログインに失敗しました。";
+                    return;
+                }
+
+                var userToken = res.data["userToken"];
+                // // TODO: テスト用ログ
+                // console.log("debug userToken", userToken);
+
+                storage.setUserToken(userToken, this.rememberLoggedIn);
+                storage.setRememberLoggedIn(this.rememberLoggedIn);
+
+                // TODO: テストコード
+                res = await ApiClient.getAuthUser();
+                if (res.isError) {
+                    console.error(res.data);
+                    this.errorMessage = "ユーザの取得に失敗しました。";
+                    return;
+                }
+                console.log("debug user", res.data);
+
+                //TODO: 現在はログイン後、プロフィール画面へ遷移するようにしているが、後で変更
+                this.$router.push({ path: "/profile" });
+            } finally {
+                this.isSubmitting = false;
             }
-
-            // TODO: テスト用ログ
-            console.log(
-                "debug accessToken",
-                userStore.userCredential.accessToken
-            );
-
-            // login
-            var res = await ApiClient.authLogin(
-                userStore.userCredential.accessToken
-            );
-            if (res.isError) {
-                console.error(res.data);
-                this.errorMessage = "ログインに失敗しました。";
-                return;
-            }
-
-            var userToken = res.data["userToken"];
-            // TODO: テスト用ログ
-            console.log("debug userToken", userToken);
-
-            storage.setUserToken(userToken, this.rememberLoggedIn);
-            storage.setRememberLoggedIn(this.rememberLoggedIn);
-
-            // TODO: テストコード
-            res = await ApiClient.getAuthUser();
-            if (res.isError) {
-                console.error(res.data);
-                this.errorMessage = "ユーザの取得に失敗しました。";
-                return;
-            }
-            console.log("debug user", res.data);
-
-            //TODO: 現在はログイン後、プロフィール画面へ遷移するようにしているが、後で変更
-            this.$router.push({ path: "/profile" });
         },
     },
 };
