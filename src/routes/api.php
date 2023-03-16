@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\ProfilesKidsController;
 use App\Http\Controllers\Api\ProfilesSeniorsController;
 use App\Http\Controllers\Api\SittersController;
 use App\Http\Controllers\Api\PlacesController;
+use App\Http\Controllers\Api\NursesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -56,3 +57,11 @@ Route::put('/sitters/me/option', [SittersController::class, 'updateOption']);
 Route::delete('/sitters/me/option/{id}', [SittersController::class, 'deleteOption']);
 
 Route::apiResource('/places', PlacesController::class);
+
+Route::get('/nurses/me', [NursesController::class, 'index']);
+Route::get('/nurses/{id}', [NursesController::class, 'show']);
+Route::post('/nurses/me/photo', [NursesController::class, 'uploadPhotos']);
+Route::post('/nurses/me/option', [NursesController::class, 'addOption']);
+Route::post('/nurses/me/{state}', [NursesController::class, 'saveNurse']);
+Route::put('/nurses/me/option', [NursesController::class, 'updateOption']);
+Route::delete('/nurses/me/option/{id}', [NursesController::class, 'deleteOption']);

@@ -20,4 +20,9 @@ class Place extends Model
     {
         return $this->belongsToMany(Sitter::class);
     }
+
+    public function nurse()
+    {
+        return $this->belongsToMany(Nurse::class);
+    }
 }

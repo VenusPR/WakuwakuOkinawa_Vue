@@ -3,14 +3,14 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Nurse;
 use Illuminate\Http\Request;
-use App\Models\Sitter;
 use App\Models\Place;
-use App\Models\SitterOption;
+use App\Models\NurseOption;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 
-class SittersController extends Controller
+class NursesController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -20,8 +20,8 @@ class SittersController extends Controller
     public function index()
     {
         $user_id = 1;
-        $sitter = Sitter::with('place')->with('sitterOption')->where('user_id', $user_id)->first();
-        return ["sitter" => $sitter];
+        $nurse = Nurse::with('place')->with('nurseOption')->where('user_id', $user_id)->first();
+        return ["nurse" => $nurse];
     }
 
     /**
@@ -43,17 +43,17 @@ class SittersController extends Controller
      */
     public function show($id)
     {
-        $sitter = Sitter::with('place')
-            ->with('sitterOption')
+        $nurse = Nurse::with('place')
+            ->with('nurseOption')
             ->where('id', $id)
             ->where('state', 1)
             ->first();
-        if (!$sitter) {
+        if (!$nurse) {
             return response()->json([
-                'message' => 'ご指定のシッターサービスは存在しないか、未公開になっています。'
+                'message' => 'ご指定の付き添いサービスは存在しないか、未公開になっています。'
             ], 404);
         }
-        return ["sitter" => $sitter];
+        return ["nurse" => $nurse];
     }
 
     /**
@@ -64,62 +64,62 @@ class SittersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function saveSitter(Request $request, $state)
+    public function saveNurse(Request $request, $state)
     {
         $user_id = 1;
 
-        if ($request->sitter) {
-            $sitter = Sitter::where('user_id', $user_id)->first();
-            $sitter->state = $state;
-            if (!$sitter) { //存在しない場合は新規作成
+        if ($request->nurse) {
+            $nurse = Nurse::where('user_id', $user_id)->first();
+            $nurse->state = $state;
+            if (!$nurse) { //存在しない場合は新規作成
                 //作成
-                $sitter = new Sitter();
-                $sitter->user_id = $user_id;
+                $nurse = new Nurse();
+                $nurse->user_id = $user_id;
             }
-            $this->setSitterUpdateProps($sitter, $request->sitter);
+            $this->setNurseUpdateProps($nurse, $request->nurse);
 
-            $sitter->save();
-            // Place(沖縄地域)の同期
+            $nurse->save();
+
+            //Place(沖縄地域)の同期
             $place_array = array();
-            if (isset($request->sitter['place'])) {
-                foreach ($request->sitter['place'] as $place) {
+            if (isset($request->nurse['place'])) {
+                foreach ($request->nurse['place'] as $place) {
                     array_push($place_array, $place['id']);
                 }
-                $sitter->place()->sync($place_array);
+                $nurse->place()->sync($place_array);
             }
         }
 
-        $sitter = Sitter::with('place')->with('sitterOption')->where('user_id', $user_id)->first();
-        return ["sitter" => $sitter];
+        $nurse = Nurse::with('place')->with('nurseOption')->where('user_id', $user_id)->first();
+        return ["nurse" => $nurse];
     }
     /**
-     * Sitterサービスのオプションの追加
+     * Nurseサービスのオプションの追加
      */
     public function addOption(Request $request)
     {
         $user_id = 1;
-        $sitter = Sitter::where('user_id', $user_id)->first();
-        $option = new SitterOption();
-        $option->sitter_id = $sitter->id;
+        $nurse = Nurse::where('user_id', $user_id)->first();
+        $option = new NurseOption();
+        $option->nurse_id = $nurse->id;
         $option->save();
-        $optionOne = SitterOption::find($option->id);
+        $optionOne = NurseOption::find($option->id);
         return ["option" => $optionOne];
     }
-
     /**
-     * Sitterサービスのオプションの編集
+     * Nurseサービスのオプションの編集
      * すべてのオプションを一度に更新する
      */
     public function updateOption(Request $request)
     {
         $user_id = 1;
-        $sitter = Sitter::where('user_id', $user_id)->first();
+        $nurse = Nurse::where('user_id', $user_id)->first();
         if ($request->option) {
             foreach ($request->option as $optionData) {
                 $option = null;
                 if (isset($optionData['id'])) {
-                    // 更新
-                    $option = SitterOption::where([['id', $optionData['id']], ['sitter_id', $sitter->id]])->first();
+                    //更新
+                    $option = NurseOption::where([['id', $optionData['id']], ['nurse_id', $nurse->id]])->first();
                     if (!$option) {
                         return response()->json([
                             'message' => 'option not found'
@@ -130,7 +130,7 @@ class SittersController extends Controller
                 $option->save();
             }
         }
-        $optionList = SitterOption::where('sitter_id', $sitter->id)->get();
+        $optionList = NurseOption::where('sitter_id', $nurse->id)->get();
         return ["option" => $optionList];
     }
 
@@ -140,15 +140,14 @@ class SittersController extends Controller
     public function deleteOption($id)
     {
         $user_id = 1;
-        $sitter = Sitter::where('user_id', $user_id)->first();
-        $option = SitterOption::where('sitter_id', $sitter->id)->where('id', $id)->first();
+        $nurse = Nurse::where('user_id', $user_id)->first();
+        $option = NurseOption::where('nurse_id', $nurse->id)->where('id', $id)->first();
         $option->delete();
         return ["message" => 'オプションを削除しました。'];
     }
 
 
-
-    private function setSitterUpdateProps($sitter, $data)
+    private function setNurseUpdateProps($nurse, $data)
     {
         $updateProps = [
             'state',
@@ -160,16 +159,13 @@ class SittersController extends Controller
             'fee',
             'plus_fee',
             'acceptable_number',
-            'childcare_min_year',
-            'childcare_min_month',
-            'childcare_max_year',
-            'childcare_max_month',
-            'min_support_hour'
+            'min_support_hour',
+            'start_pref_id',
         ];
 
         foreach ($updateProps as $prop) {
             if (!empty($data[$prop])) {
-                $sitter->{$prop} = $data[$prop];
+                $nurse->{$prop} = $data[$prop];
             }
         }
     }
@@ -207,7 +203,7 @@ class SittersController extends Controller
         ]);
 
         $user_id = 1;
-        $sitter = Sitter::where('user_id', $user_id)->first();
+        $nurse = Nurse::where('user_id', $user_id)->first();
 
         // バリデーションチェック
         for ($i = 1; $i <= 5; $i++) {
@@ -224,26 +220,26 @@ class SittersController extends Controller
         for ($i = 1; $i <= 5; $i++) {
             if ($request->hasFile("file_$i")) {
                 $file = $request->file("file_$i");
-                $path = $file->store("public/sitters_photo/$sitter->id");
-                $file_name = '/storage/sitters_photo/' . $sitter->id . '/' . basename($path);
+                $path = $file->store("public/nurses_photo/$nurse->id");
+                $file_name = '/storage/nurses_photo/' . $nurse->id . '/' . basename($path);
                 //既存のファイルがある場合は削除する
-                if ($sitter->{"photo_$i"}) {
-                    Storage::disk('public')->delete($sitter->{"photo_$i"});
+                if ($nurse->{"photo_$i"}) {
+                    Storage::disk('public')->delete($nurse->{"photo_$i"});
                 }
-                $sitter->{"photo_$i"} = $file_name;
+                $nurse->{"photo_$i"} = $file_name;
             }
         }
 
-        $sitter->save();
+        $nurse->save();
 
         return [
             'message' => 'Images uploaded successfully',
             'file_names' => [
-                $sitter->photo_1,
-                $sitter->photo_2,
-                $sitter->photo_3,
-                $sitter->photo_4,
-                $sitter->photo_5,
+                $nurse->photo_1,
+                $nurse->photo_2,
+                $nurse->photo_3,
+                $nurse->photo_4,
+                $nurse->photo_5,
             ]
         ];
     }
